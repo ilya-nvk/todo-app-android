@@ -47,12 +47,24 @@ class TodoItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         text.setTextColor(typedValue.data)
 
         // priority icon
-        if (todoItem.priority == Priority.LOW) {
-            priority.setImageResource(R.drawable.priority_low)
-            priority.contentDescription = R.string.low_priority.toString()
-        } else if (todoItem.priority == Priority.HIGH) {
-            priority.setImageResource(R.drawable.priority_high)
-            priority.contentDescription = R.string.high_priority.toString()
+        when (todoItem.priority) {
+            Priority.LOW -> {
+                priority.visibility = View.VISIBLE
+                priority.setImageResource(R.drawable.priority_low)
+                priority.contentDescription = R.string.low_priority.toString()
+            }
+
+            Priority.HIGH -> {
+                priority.visibility = View.VISIBLE
+                priority.setImageResource(R.drawable.priority_high)
+                priority.contentDescription = R.string.high_priority.toString()
+            }
+
+            else -> {
+                //priority.visibility = View.GONE
+                priority.setImageResource(0)
+                priority.contentDescription = R.string.no_priority.toString()
+            }
         }
 
         // deadline text
@@ -60,6 +72,8 @@ class TodoItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
             deadline.visibility = View.VISIBLE
             deadline.text =
                 DateFormat.getDateInstance(DateFormat.DEFAULT).format(todoItem.deadline!!)
+        } else {
+            deadline.visibility = View.GONE
         }
 
         // checkbox

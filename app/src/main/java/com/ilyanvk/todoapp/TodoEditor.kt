@@ -50,7 +50,7 @@ class TodoEditor : Fragment() {
         editText.setText(text)
 
         // popup menu
-        createPopupMenu(
+        priorityController(
             priorityText,
             rootView.findViewById(R.id.priority_container),
             priority
@@ -165,13 +165,13 @@ class TodoEditor : Fragment() {
         return datePickerDialog
     }
 
-    private fun createPopupMenu(
+    private fun priorityController(
         priorityText: TextView,
         priorityContainer: View,
-        priority: Priority,
-        setPriority: (priority: Priority) -> Unit,
+        currentPriority: Priority,
+        setPriority: (Priority) -> Unit,
     ) {
-        when (priority) {
+        when (currentPriority) {
             Priority.LOW -> priorityText.text = getString(R.string.low)
             Priority.MEDIUM -> priorityText.text = getString(R.string.no)
             Priority.HIGH -> priorityText.text = getString(R.string.high)
@@ -211,6 +211,7 @@ class TodoEditor : Fragment() {
 
                 R.id.high_priority_text -> {
                     priorityText.text = getString(R.string.high)
+                    setPriority(Priority.HIGH)
                     true
                 }
 
