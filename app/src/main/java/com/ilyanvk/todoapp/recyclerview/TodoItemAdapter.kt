@@ -5,7 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.ilyanvk.todoapp.R
+import com.ilyanvk.todoapp.databinding.TodoItemBinding
 import com.ilyanvk.todoapp.recyclerview.data.TodoItem
 import com.ilyanvk.todoapp.recyclerview.data.TodoItemViewHolder
 import com.ilyanvk.todoapp.recyclerview.domain.CommonCallbackImpl
@@ -26,8 +26,9 @@ class TodoItemAdapter(
         }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TodoItemViewHolder {
-        val layoutInflater = LayoutInflater.from(parent.context)
-        return TodoItemViewHolder(layoutInflater.inflate(R.layout.todo_item, parent, false))
+        val binding = TodoItemBinding
+            .inflate(LayoutInflater.from(parent.context), parent, false)
+        return TodoItemViewHolder(binding)
     }
 
     override fun getItemCount() = todoItems.size

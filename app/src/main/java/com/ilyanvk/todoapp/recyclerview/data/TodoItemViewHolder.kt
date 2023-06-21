@@ -7,14 +7,16 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.ilyanvk.todoapp.R
+import com.ilyanvk.todoapp.databinding.TodoItemBinding
 import java.text.DateFormat
 
 
-class TodoItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-    private val text: TextView = itemView.findViewById(R.id.text_preview)
-    private val priority: ImageView = itemView.findViewById(R.id.priority)
-    private val deadline: TextView = itemView.findViewById(R.id.deadline)
-    private val checkbox: ImageView = itemView.findViewById(R.id.checkbox)
+class TodoItemViewHolder(private val binding: TodoItemBinding) :
+    RecyclerView.ViewHolder(binding.root) {
+    private val text: TextView = binding.textPreview
+    private val priority: ImageView = binding.priority
+    private val deadline: TextView = binding.deadline
+    private val checkbox: ImageView = binding.checkbox
 
     fun onBind(
         todoItem: TodoItem,
@@ -22,10 +24,10 @@ class TodoItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         onCheckboxClick: (todoItem: TodoItem) -> Unit
     ) {
         createView(todoItem)
-        itemView.setOnClickListener {
-            onTaskClick(todoItem, itemView)
+        binding.root.setOnClickListener {
+            onTaskClick(todoItem, binding.root)
         }
-        itemView.findViewById<ImageView>(R.id.checkbox).setOnClickListener {
+        binding.checkbox.setOnClickListener {
             onCheckboxClick(todoItem)
         }
     }

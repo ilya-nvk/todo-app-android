@@ -4,28 +4,30 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.ilyanvk.todoapp.databinding.FragmentTodoListBinding
 import com.ilyanvk.todoapp.recyclerview.TodoItemAdapter
 import com.ilyanvk.todoapp.recyclerview.data.TodoItemsRepository
 
 class TodoList : Fragment() {
 
+    private var _binding: FragmentTodoListBinding? = null
+    private val binding get() = _binding!!
     private lateinit var todoItemsRecyclerView: RecyclerView
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        val rootView = inflater.inflate(R.layout.fragment_todo_list, container, false)
+    ): View {
+        _binding = FragmentTodoListBinding.inflate(inflater, container, false)
+        val view = binding.root
 
-        todoItemsRecyclerView = rootView.findViewById(R.id.todo_items)
+        todoItemsRecyclerView = binding.todoItems
         val todoItemsAdapter = TodoItemAdapter(onTaskClick = { todoItem, itemView ->
             TodoItemsRepository.toEdit = todoItem
             Navigation.findNavController(itemView).navigate(R.id.action_todoList_to_todoEditor)
@@ -38,10 +40,8 @@ class TodoList : Fragment() {
 
         TodoItemsRepository.onRepositoryUpdate = {
             todoItemsAdapter.todoItems = TodoItemsRepository.getTodoItems()
-            rootView.findViewById<TextView>(R.id.completed).text = String.format(
-                getString(R.string.completed),
-                TodoItemsRepository.countCompletedTodoItems()
-            )
+            _binding?.completed?.text =
+                getString(R.string.completed, TodoItemsRepository.countCompletedTodoItems())
         }
 
         val layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
@@ -49,12 +49,10 @@ class TodoList : Fragment() {
         todoItemsRecyclerView.layoutManager = layoutManager
         todoItemsAdapter.todoItems = TodoItemsRepository.getTodoItems()
 
-        rootView.findViewById<TextView>(R.id.completed).text = String.format(
-            getString(R.string.completed),
-            TodoItemsRepository.countCompletedTodoItems()
-        )
+        binding.completed.text =
+            getString(R.string.completed, TodoItemsRepository.countCompletedTodoItems())
 
-        val completedVisibilityIcon = rootView.findViewById<ImageView>(R.id.completed_visibility)
+        val completedVisibilityIcon = binding.completedVisibility
         completedVisibilityIcon.setOnClickListener {
             if (TodoItemsRepository.showCompleted
             ) {
@@ -67,11 +65,15 @@ class TodoList : Fragment() {
             }
         }
 
-        rootView.findViewById<FloatingActionButton>(R.id.new_todo_floating_action_button)
-            .setOnClickListener {
-                findNavController().navigate(R.id.action_todoList_to_todoEditor)
-            }
+        binding.newTodoFloatingActionButton.setOnClickListener {
+            findNavController().navigate(R.id.action_todoList_to_todoEditor)
+        }
 
-        return rootView
+        return view
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

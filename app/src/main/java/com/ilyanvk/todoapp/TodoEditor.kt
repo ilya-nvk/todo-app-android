@@ -9,16 +9,14 @@ import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.widget.EditText
-import android.widget.ImageView
 import android.widget.PopupMenu
 import android.widget.TextView
 import android.widget.Toast
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.switchmaterial.SwitchMaterial
+import com.ilyanvk.todoapp.databinding.FragmentTodoEditorBinding
 import com.ilyanvk.todoapp.recyclerview.data.Priority
 import com.ilyanvk.todoapp.recyclerview.data.TodoItem
 import com.ilyanvk.todoapp.recyclerview.data.TodoItemsRepository
@@ -29,16 +27,20 @@ import java.util.Date
 
 class TodoEditor : Fragment() {
 
+    private var _binding: FragmentTodoEditorBinding? = null
+    private val binding get() = _binding!!
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        val rootView = inflater.inflate(R.layout.fragment_todo_editor, container, false)
+    ): View {
+        _binding = FragmentTodoEditorBinding.inflate(inflater, container, false)
+        val view = binding.root
 
-        val priorityText = rootView.findViewById<TextView>(R.id.priority_text)
-        val deadlineText = rootView.findViewById<TextView>(R.id.deadline_text)
-        val switch = rootView.findViewById<SwitchMaterial>(R.id.deadline_switch)
-        val editText = rootView.findViewById<EditText>(R.id.edit_text)
+        val priorityText = binding.priorityText
+        val deadlineText = binding.deadlineText
+        val switch = binding.deadlineSwitch
+        val editText = binding.editText
 
         val todoItem = TodoItemsRepository.toEdit
         var priority = todoItem?.priority ?: Priority.MEDIUM
@@ -52,18 +54,18 @@ class TodoEditor : Fragment() {
         // popup menu
         priorityController(
             priorityText,
-            rootView.findViewById(R.id.priority_container),
+            binding.priorityContainer,
             priority
         ) { priority = it }
 
         // delete button
-        deleteButtonController(todoItem, rootView)
+        deleteButtonController(todoItem, view)
 
         // deadline
         deadlineController(deadline, deadlineText, switch) { deadline = it }
 
         // save
-        rootView.findViewById<TextView>(R.id.save_task_button).setOnClickListener {
+        binding.saveTaskButton.setOnClickListener {
             text = editText.text.toString().trim()
             if (text == "") {
                 Toast.makeText(requireContext(), R.string.empty_task_message, Toast.LENGTH_SHORT)
@@ -97,11 +99,16 @@ class TodoEditor : Fragment() {
             findNavController().navigate(R.id.action_todoEditor_to_todoList)
         }
 
-        rootView.findViewById<ImageView>(R.id.close_editor_button).setOnClickListener {
+        binding.closeEditorButton.setOnClickListener {
             findNavController().navigate(R.id.action_todoEditor_to_todoList)
         }
 
-        return rootView
+        return view
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     private fun deadlineController(
@@ -131,16 +138,15 @@ class TodoEditor : Fragment() {
 
     private fun deleteButtonController(todoItem: TodoItem?, rootView: View) {
         if (todoItem != null) {
-            rootView.findViewById<ImageView>(R.id.delete_icon)
-                .setImageResource(R.drawable.delete_red)
-            rootView.findViewById<TextView>(R.id.delete_text).setTextColor(
+            binding.deleteIcon.setImageResource(R.drawable.delete_red)
+            binding.deleteText.setTextColor(
                 ContextCompat.getColor(
                     requireContext(),
                     R.color.color_light_red
                 )
             )
         }
-        rootView.findViewById<ConstraintLayout>(R.id.delete_button).setOnClickListener {
+        binding.deleteButton.setOnClickListener {
             if (todoItem != null) {
                 TodoItemsRepository.deleteTodoItem(todoItem)
             }
@@ -238,5 +244,4 @@ class TodoEditor : Fragment() {
             popupMenu.show()
         }
     }
-
 }
