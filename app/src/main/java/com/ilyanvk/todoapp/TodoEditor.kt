@@ -59,7 +59,7 @@ class TodoEditor : Fragment() {
         ) { priority = it }
 
         // delete button
-        deleteButtonController(todoItem, view)
+        deleteButtonController(todoItem)
 
         // deadline
         deadlineController(deadline, deadlineText, switch) { deadline = it }
@@ -136,7 +136,7 @@ class TodoEditor : Fragment() {
         deadlineText.setOnClickListener { datePickerDialog.show() }
     }
 
-    private fun deleteButtonController(todoItem: TodoItem?, rootView: View) {
+    private fun deleteButtonController(todoItem: TodoItem?) {
         if (todoItem != null) {
             binding.deleteIcon.setImageResource(R.drawable.delete_red)
             binding.deleteText.setTextColor(
