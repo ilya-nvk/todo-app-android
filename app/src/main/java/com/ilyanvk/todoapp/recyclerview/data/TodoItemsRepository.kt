@@ -7,6 +7,12 @@ object TodoItemsRepository {
     private val todoItems = mutableListOf<TodoItem>()
     private var currentId = 0
     var toEdit: TodoItem? = null
+    var onRepositoryUpdate: () -> Unit = {}
+    var showCompleted = true
+        set(value) {
+            field = value
+            onRepositoryUpdate()
+        }
 
     init {
         addTodoItem(
@@ -124,7 +130,10 @@ object TodoItemsRepository {
     }
 
     fun getTodoItems(): List<TodoItem> {
-        return todoItems
+        if (showCompleted) {
+            return todoItems.toList()
+        }
+        return todoItems.filter { !it.isCompleted }
     }
 
     fun countCompletedTodoItems(): Int {
@@ -133,6 +142,7 @@ object TodoItemsRepository {
 
     fun addTodoItem(todoItem: TodoItem) {
         todoItems.add(todoItem)
+        onRepositoryUpdate()
     }
 
     fun addTodoItem(
@@ -154,15 +164,18 @@ object TodoItemsRepository {
                 modificationDate
             )
         )
+        onRepositoryUpdate()
     }
 
     fun updateTodoItem(todoItem: TodoItem) {
-        todoItem.modificationDate = Date()
+        val newTodoItem = todoItem.copy(modificationDate = Date())
         val index = todoItems.indexOfFirst { it.id == todoItem.id }
-        todoItems[index] = todoItem
+        todoItems[index] = newTodoItem
+        onRepositoryUpdate()
     }
 
     fun deleteTodoItem(todoItem: TodoItem) {
         todoItems.remove(todoItem)
+        onRepositoryUpdate()
     }
 }

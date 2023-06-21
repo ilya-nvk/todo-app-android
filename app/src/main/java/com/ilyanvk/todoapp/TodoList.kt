@@ -23,15 +23,22 @@ class TodoList : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val rootView = inflater.inflate(R.layout.fragment_todo_list, container, false)
+
         todoItemsRecyclerView = rootView.findViewById(R.id.todo_items)
         val todoItemsAdapter = TodoItemAdapter { todoItem ->
-            todoItem.isCompleted = !todoItem.isCompleted
-            TodoItemsRepository.updateTodoItem(todoItem)
+            val newTodoItem =
+                todoItem.copy(isCompleted = !todoItem.isCompleted)
+            TodoItemsRepository.updateTodoItem(newTodoItem)
+        }
+
+        TodoItemsRepository.onRepositoryUpdate = {
+            todoItemsAdapter.todoItems = TodoItemsRepository.getTodoItems()
             rootView.findViewById<TextView>(R.id.completed).text = String.format(
                 getString(R.string.completed),
                 TodoItemsRepository.countCompletedTodoItems()
             )
         }
+
         val layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
         todoItemsRecyclerView.adapter = todoItemsAdapter
         todoItemsRecyclerView.layoutManager = layoutManager
@@ -43,17 +50,15 @@ class TodoList : Fragment() {
         )
 
         val completedVisibilityIcon = rootView.findViewById<ImageView>(R.id.completed_visibility)
-        var isVisible = true
         completedVisibilityIcon.setOnClickListener {
-            if (isVisible
+            if (TodoItemsRepository.showCompleted
             ) {
-                todoItemsAdapter.todoItems = todoItemsAdapter.todoItems.filter { !it.isCompleted }
+                TodoItemsRepository.showCompleted = false
                 completedVisibilityIcon.setImageResource(R.drawable.visibility_off)
-                isVisible = false
             } else {
+                TodoItemsRepository.showCompleted = true
                 todoItemsAdapter.todoItems = TodoItemsRepository.getTodoItems()
                 completedVisibilityIcon.setImageResource(R.drawable.visibility)
-                isVisible = true
             }
         }
 

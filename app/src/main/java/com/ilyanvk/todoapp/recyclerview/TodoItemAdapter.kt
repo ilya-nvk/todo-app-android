@@ -15,13 +15,7 @@ class TodoItemAdapter(private val onCheckboxClick: (todoItem: TodoItem) -> Unit)
         set(value) {
             val callback = CommonCallbackImpl(oldItems = field,
                 newItems = value,
-                { oldItem, newItem -> oldItem.id == newItem.id },
-                { oldItem, newItem ->
-                    oldItem.text == newItem.text &&
-                            oldItem.priority == newItem.priority &&
-                            oldItem.deadline == newItem.deadline &&
-                            oldItem.isCompleted == newItem.isCompleted
-                })
+                areItemsTheSameImpl = { oldItem, newItem -> oldItem.id == newItem.id })
             field = value
             val diffResult = DiffUtil.calculateDiff(callback)
             diffResult.dispatchUpdatesTo(this)

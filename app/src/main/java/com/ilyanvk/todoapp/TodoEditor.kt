@@ -43,7 +43,7 @@ class TodoEditor : Fragment() {
         val todoItem = TodoItemsRepository.toEdit
         var priority = todoItem?.priority ?: Priority.MEDIUM
         var deadline = todoItem?.deadline
-        var text = todoItem?.text
+        var text = todoItem?.text ?: ""
         TodoItemsRepository.toEdit = null
 
         // text
@@ -74,12 +74,25 @@ class TodoEditor : Fragment() {
                 deadline = null
             }
             if (todoItem != null) {
-                todoItem.text = text!!
-                todoItem.priority = priority
-                todoItem.deadline = deadline
-                TodoItemsRepository.updateTodoItem(todoItem)
+                val newTodoItem = TodoItem(
+                    todoItem.id,
+                    text,
+                    priority,
+                    deadline,
+                    todoItem.isCompleted,
+                    todoItem.creationDate,
+                    Date()
+                )
+                TodoItemsRepository.updateTodoItem(newTodoItem)
             } else {
-                TodoItemsRepository.addTodoItem(text!!, priority, deadline, false, Date(), null)
+                TodoItemsRepository.addTodoItem(
+                    text,
+                    priority,
+                    deadline,
+                    false,
+                    Date(),
+                    null
+                )
             }
             findNavController().navigate(R.id.action_todoEditor_to_todoList)
         }

@@ -28,7 +28,6 @@ class TodoItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         }
         itemView.findViewById<ImageView>(R.id.checkbox).setOnClickListener {
             onCheckboxClick(todoItem)
-            createView(todoItem)
         }
     }
 
@@ -71,7 +70,7 @@ class TodoItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         if (todoItem.deadline != null) {
             deadline.visibility = View.VISIBLE
             deadline.text =
-                DateFormat.getDateInstance(DateFormat.DEFAULT).format(todoItem.deadline!!)
+                DateFormat.getDateInstance(DateFormat.DEFAULT).format(todoItem.deadline)
         } else {
             deadline.visibility = View.GONE
         }
