@@ -5,7 +5,6 @@ import android.util.TypedValue
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.navigation.Navigation
 import androidx.recyclerview.widget.RecyclerView
 import com.ilyanvk.todoapp.R
 import java.text.DateFormat
@@ -19,12 +18,12 @@ class TodoItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
     fun onBind(
         todoItem: TodoItem,
+        onTaskClick: (todoItem: TodoItem, itemView: View) -> Unit,
         onCheckboxClick: (todoItem: TodoItem) -> Unit
     ) {
         createView(todoItem)
         itemView.setOnClickListener {
-            TodoItemsRepository.toEdit = todoItem
-            Navigation.findNavController(itemView).navigate(R.id.action_todoList_to_todoEditor)
+            onTaskClick(todoItem, itemView)
         }
         itemView.findViewById<ImageView>(R.id.checkbox).setOnClickListener {
             onCheckboxClick(todoItem)

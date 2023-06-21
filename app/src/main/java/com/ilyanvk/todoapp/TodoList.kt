@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -25,11 +26,15 @@ class TodoList : Fragment() {
         val rootView = inflater.inflate(R.layout.fragment_todo_list, container, false)
 
         todoItemsRecyclerView = rootView.findViewById(R.id.todo_items)
-        val todoItemsAdapter = TodoItemAdapter { todoItem ->
-            val newTodoItem =
-                todoItem.copy(isCompleted = !todoItem.isCompleted)
-            TodoItemsRepository.updateTodoItem(newTodoItem)
-        }
+        val todoItemsAdapter = TodoItemAdapter(onTaskClick = { todoItem, itemView ->
+            TodoItemsRepository.toEdit = todoItem
+            Navigation.findNavController(itemView).navigate(R.id.action_todoList_to_todoEditor)
+        },
+            onCheckboxClick = { todoItem ->
+                val newTodoItem =
+                    todoItem.copy(isCompleted = !todoItem.isCompleted)
+                TodoItemsRepository.updateTodoItem(newTodoItem)
+            })
 
         TodoItemsRepository.onRepositoryUpdate = {
             todoItemsAdapter.todoItems = TodoItemsRepository.getTodoItems()

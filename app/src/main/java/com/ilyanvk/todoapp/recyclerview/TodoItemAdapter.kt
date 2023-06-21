@@ -1,6 +1,7 @@
 package com.ilyanvk.todoapp.recyclerview
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -9,7 +10,10 @@ import com.ilyanvk.todoapp.recyclerview.data.TodoItem
 import com.ilyanvk.todoapp.recyclerview.data.TodoItemViewHolder
 import com.ilyanvk.todoapp.recyclerview.domain.CommonCallbackImpl
 
-class TodoItemAdapter(private val onCheckboxClick: (todoItem: TodoItem) -> Unit) :
+class TodoItemAdapter(
+    private val onTaskClick: (todoItem: TodoItem, itemView: View) -> Unit,
+    private val onCheckboxClick: (todoItem: TodoItem) -> Unit
+) :
     RecyclerView.Adapter<TodoItemViewHolder>() {
     var todoItems = listOf<TodoItem>()
         set(value) {
@@ -29,6 +33,6 @@ class TodoItemAdapter(private val onCheckboxClick: (todoItem: TodoItem) -> Unit)
     override fun getItemCount() = todoItems.size
 
     override fun onBindViewHolder(holder: TodoItemViewHolder, position: Int) {
-        holder.onBind(todoItems[position], onCheckboxClick)
+        holder.onBind(todoItems[position], onTaskClick, onCheckboxClick)
     }
 }
