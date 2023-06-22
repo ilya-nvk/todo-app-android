@@ -27,7 +27,7 @@ class TodoList : Fragment() {
         _binding = FragmentTodoListBinding.inflate(inflater, container, false)
         val view = binding.root
 
-        todoItemsRecyclerView = binding.todoItems
+        // adapter
         val todoItemsAdapter = TodoItemAdapter(onTaskClick = { todoItem, itemView ->
             TodoItemsRepository.toEdit = todoItem
             Navigation.findNavController(itemView).navigate(R.id.action_todoList_to_todoEditor)
@@ -38,12 +38,15 @@ class TodoList : Fragment() {
                 TodoItemsRepository.updateTodoItem(newTodoItem)
             })
 
+        // repository
         TodoItemsRepository.onRepositoryUpdate = {
             todoItemsAdapter.todoItems = TodoItemsRepository.getTodoItems()
             _binding?.completed?.text =
                 getString(R.string.completed, TodoItemsRepository.countCompletedTodoItems())
         }
 
+        // recycler view
+        todoItemsRecyclerView = binding.todoItems
         val layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
         todoItemsRecyclerView.adapter = todoItemsAdapter
         todoItemsRecyclerView.layoutManager = layoutManager
@@ -53,6 +56,9 @@ class TodoList : Fragment() {
             getString(R.string.completed, TodoItemsRepository.countCompletedTodoItems())
 
         val completedVisibilityIcon = binding.completedVisibility
+        if (!TodoItemsRepository.showCompleted) {
+            completedVisibilityIcon.setImageResource(R.drawable.visibility_off)
+        }
         completedVisibilityIcon.setOnClickListener {
             if (TodoItemsRepository.showCompleted
             ) {
