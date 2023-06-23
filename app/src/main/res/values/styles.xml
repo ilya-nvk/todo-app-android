@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="LargeTitle" parent="TextAppearance.AppCompat">
+        <item name="android:textColor">?label_primary</item>
+        <item name="android:textSize">32sp</item>
+        <item name="android:layout_height">38dp</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="fontFamily">sans-serif-medium</item>
+    </style>
+
+    <style name="Title" parent="TextAppearance.AppCompat">
+        <item name="android:textColor">?label_primary</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:layout_height">32dp</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="fontFamily">sans-serif-medium</item>
+    </style>
+
+    <style name="Button" parent="TextAppearance.AppCompat">
+        <item name="android:textColor">?label_primary</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:layout_height">24dp</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="textAllCaps">true</item>
+        <item name="android:gravity">center</item>
+        <item name="fontFamily">sans-serif-medium</item>
+    </style>
+
+    <style name="Body" parent="TextAppearance.AppCompat">
+        <item name="android:textColor">?label_primary</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:layout_height">20dp</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="fontFamily">sans-serif</item>
+    </style>
+
+    <style name="Subhead" parent="TextAppearance.AppCompat">
+        <item name="android:textColor">?label_primary</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:layout_height">20dp</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="fontFamily">sans-serif</item>
+    </style>
+
+    <style name="Spinner" parent="Widget.AppCompat.Spinner">
+        <item name="android:textColor">?label_tertiary</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="fontFamily">sans-serif</item>
+        <item name="android:padding">0dp</item>
+    </style>
+
+    <style name="DatePicker" parent="ThemeOverlay.AppCompat.Dialog">
+        <item name="colorAccent">?color_blue</item>
+        <item name="colorSecondary">?color_blue</item>
+        <item name="colorControlActivated">?color_blue</item>
+        <item name="colorControlHighlight">?color_blue</item>
+        <item name="android:windowBackground">?back_secondary</item>
+        <item name="android:textColor">?color_white</item>
+        <item name="android:colorPrimary">?color_blue</item>
+        <item name="android:textColorSecondary">?label_tertiary</item>
+        <item name="android:textColorPrimary">?label_primary</item>
+        <item name="android:textColorPrimaryInverse">?color_white</item>
+        <item name="android:textColorSecondaryInverse">?color_white</item>
+        <item name="android:buttonBarNegativeButtonStyle">@style/DatePickerTheme.ButtonBarButton
+        </item>
+        <item name="android:buttonBarPositiveButtonStyle">@style/DatePickerTheme.ButtonBarButton
+        </item>
+    </style>
+
+    <style name="DatePickerTheme.ButtonBarButton" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
+        <item name="android:textColor">?color_blue</item>
+    </style>
+</resources>

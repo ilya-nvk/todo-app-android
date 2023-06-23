@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?back_primary"
+    tools:context=".TodoEditor">
+
+    <ImageView
+        android:id="@+id/close_editor_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="24dp"
+        android:contentDescription="@string/close"
+        android:src="@drawable/close"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/save_task_button"
+        style="@style/Button"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="16dp"
+        android:text="@string/save"
+        android:textColor="?color_blue"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="24dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/close_editor_button">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="33dp">
+
+            <EditText
+                android:id="@+id/edit_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:background="@drawable/card_background"
+                android:gravity="top"
+                android:hint="@string/what_to_do"
+                android:importantForAutofill="no"
+                android:inputType="textMultiLine"
+                android:minHeight="104dp"
+                android:padding="16dp"
+                android:textAppearance="@style/Body"
+                android:textColorHint="?label_tertiary"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <LinearLayout
+                android:id="@+id/priority_container"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="28dp"
+                android:orientation="vertical"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/edit_text">
+
+                <TextView
+                    style="@style/Body"
+                    android:layout_height="wrap_content"
+                    android:text="@string/priority" />
+
+                <TextView
+                    android:id="@+id/priority_text"
+                    style="@style/Subhead"
+                    android:layout_height="wrap_content"
+                    android:text="@string/no"
+                    android:textColor="?label_tertiary" />
+            </LinearLayout>
+
+            <View
+                android:id="@+id/separator_one"
+                android:layout_width="0dp"
+                android:layout_height="0.5dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:background="?support_separator"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/priority_container" />
+
+            <TextView
+                android:id="@+id/deadline_header"
+                style="@style/Body"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:text="@string/deadline"
+                app:layout_constraintBottom_toTopOf="@id/deadline_text"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/deadline_switch" />
+
+            <TextView
+                android:id="@+id/deadline_text"
+                style="@style/Body"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:textColor="?color_blue"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="@+id/deadline_switch"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/deadline_header"
+                tools:text="4 апреля 2023"
+                tools:visibility="visible" />
+
+            <com.google.android.material.switchmaterial.SwitchMaterial
+                android:id="@+id/deadline_switch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="26dp"
+                android:layout_marginEnd="16dp"
+                app:layout_constraintBottom_toBottomOf="@+id/deadline_text"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/separator_one"
+                app:thumbTint="@drawable/switch_thumb_color"
+                app:trackTint="@drawable/switch_track_color" />
+
+            <View
+                android:id="@+id/separator_two"
+                android:layout_width="0dp"
+                android:layout_height="0.5dp"
+                android:layout_marginTop="50dp"
+                android:background="?support_separator"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/deadline_switch" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/delete_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:paddingStart="16dp"
+                android:paddingTop="12dp"
+                android:paddingEnd="16dp"
+                android:paddingBottom="12dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/separator_two">
+
+                <ImageView
+                    android:id="@+id/delete_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:importantForAccessibility="no"
+                    android:src="@drawable/delete_gray"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/delete_text"
+                    style="@style/Body"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    android:text="@string/delete"
+                    android:textColor="?label_disable"
+                    app:layout_constraintBottom_toBottomOf="@id/delete_icon"
+                    app:layout_constraintStart_toEndOf="@id/delete_icon"
+                    app:layout_constraintTop_toTopOf="@id/delete_icon" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
