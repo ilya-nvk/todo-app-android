@@ -27,7 +27,6 @@ class TodoList : Fragment() {
         _binding = FragmentTodoListBinding.inflate(inflater, container, false)
         val view = binding.root
 
-        // adapter
         val todoItemsAdapter = TodoItemAdapter(onTaskClick = { todoItem, itemView ->
             TodoItemsRepository.toEdit = todoItem
             Navigation.findNavController(itemView).navigate(R.id.action_todoList_to_todoEditor)
@@ -38,19 +37,13 @@ class TodoList : Fragment() {
                 TodoItemsRepository.updateTodoItem(newTodoItem)
             })
 
-        // repository
         TodoItemsRepository.onRepositoryUpdate = {
             todoItemsAdapter.todoItems = TodoItemsRepository.getTodoItems()
             _binding?.completed?.text =
                 getString(R.string.completed, TodoItemsRepository.countCompletedTodoItems())
         }
 
-        // recycler view
-        todoItemsRecyclerView = binding.todoItems
-        val layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
-        todoItemsRecyclerView.adapter = todoItemsAdapter
-        todoItemsRecyclerView.layoutManager = layoutManager
-        todoItemsAdapter.todoItems = TodoItemsRepository.getTodoItems()
+        setupRecyclerView(todoItemsAdapter)
 
         binding.completed.text =
             getString(R.string.completed, TodoItemsRepository.countCompletedTodoItems())
@@ -76,6 +69,14 @@ class TodoList : Fragment() {
         }
 
         return view
+    }
+
+    private fun setupRecyclerView(todoItemsAdapter: TodoItemAdapter) {
+        todoItemsRecyclerView = binding.todoItems
+        val layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
+        todoItemsRecyclerView.adapter = todoItemsAdapter
+        todoItemsRecyclerView.layoutManager = layoutManager
+        todoItemsAdapter.todoItems = TodoItemsRepository.getTodoItems()
     }
 
     override fun onDestroyView() {
