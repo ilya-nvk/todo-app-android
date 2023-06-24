@@ -1,4 +1,4 @@
-package com.ilyanvk.todoapp
+package com.ilyanvk.todoapp.todoeditor
 
 import android.app.DatePickerDialog
 import android.os.Build
@@ -16,6 +16,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.switchmaterial.SwitchMaterial
+import com.ilyanvk.todoapp.R
 import com.ilyanvk.todoapp.databinding.FragmentTodoEditorBinding
 import com.ilyanvk.todoapp.recyclerview.data.Priority
 import com.ilyanvk.todoapp.recyclerview.data.TodoItem
