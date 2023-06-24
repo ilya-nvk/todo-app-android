@@ -153,7 +153,7 @@ object TodoItemsRepository {
         creationDate: Date,
         modificationDate: Date?
     ) {
-        todoItems.add(
+        addTodoItem(
             TodoItem(
                 (currentId++).toString(),
                 text,
@@ -164,7 +164,6 @@ object TodoItemsRepository {
                 modificationDate
             )
         )
-        onRepositoryUpdate()
     }
 
     fun updateTodoItem(todoItem: TodoItem) {

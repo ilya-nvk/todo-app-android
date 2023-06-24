@@ -9,12 +9,16 @@ import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
+import android.widget.ImageView
 import android.widget.PopupMenu
+import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import com.google.android.material.switchmaterial.SwitchMaterial
 import com.ilyanvk.todoapp.R
 import com.ilyanvk.todoapp.databinding.FragmentTodoEditorBinding
 import com.ilyanvk.todoapp.recyclerview.data.Priority
@@ -34,11 +38,11 @@ class TodoEditor : Fragment() {
         _binding = FragmentTodoEditorBinding.inflate(inflater, container, false)
         val view = binding.root
 
-        setupDeadlineControl()
-        setupPriorityMenu()
-        setupDeleteButton()
-        setupSaveTaskButton()
-        setupCloseEditorButton()
+        setupDeadlineControl(binding.deadlineText, binding.deadlineSwitch)
+        setupPriorityMenu(binding.priorityContainer, binding.priorityText)
+        setupDeleteButton(binding.deleteIcon, binding.deleteText, binding.deleteButton)
+        setupSaveTaskButton(binding.saveTaskButton, binding.editText)
+        setupCloseEditorButton(binding.closeEditorButton)
         binding.editText.setText(viewModel.text.value)
 
         return view
@@ -49,25 +53,25 @@ class TodoEditor : Fragment() {
         _binding = null
     }
 
-    private fun setupDeleteButton() {
+    private fun setupDeleteButton(deleteIcon: ImageView, deleteText: TextView, deleteButton: View) {
         if (viewModel.todoItem.value != null) {
-            binding.deleteIcon.setImageResource(R.drawable.delete_red)
-            binding.deleteText.setTextColor(
+            deleteIcon.setImageResource(R.drawable.delete_red)
+            deleteText.setTextColor(
                 ContextCompat.getColor(
                     requireContext(), R.color.color_light_red
                 )
             )
         }
-        binding.deleteButton.setOnClickListener {
+        deleteButton.setOnClickListener {
             viewModel.deleteTodoItem()
             findNavController().navigate(R.id.action_todoEditor_to_todoList)
         }
     }
 
-    private fun setupSaveTaskButton() {
-        binding.saveTaskButton.setOnClickListener {
+    private fun setupSaveTaskButton(saveTaskButton: View, editText: EditText) {
+        saveTaskButton.setOnClickListener {
             try {
-                viewModel.saveTodo(binding.editText.text.toString())
+                viewModel.saveTodo(editText.text.toString())
                 findNavController().navigate(R.id.action_todoEditor_to_todoList)
             } catch (e: Exception) {
                 Toast.makeText(requireContext(), R.string.empty_task_message, Toast.LENGTH_SHORT)
@@ -76,14 +80,14 @@ class TodoEditor : Fragment() {
         }
     }
 
-    private fun setupDeadlineControl() {
+    private fun setupDeadlineControl(deadlineText: TextView, switch: SwitchMaterial) {
         viewModel.deadline.observe(viewLifecycleOwner) {
             if (it != null) {
-                binding.deadlineText.visibility = View.VISIBLE
-                binding.deadlineText.text =
+                deadlineText.visibility = View.VISIBLE
+                deadlineText.text =
                     DateFormat.getDateInstance(DateFormat.DEFAULT).format(it)
             } else {
-                binding.deadlineText.visibility = View.GONE
+                deadlineText.visibility = View.GONE
             }
         }
 
@@ -96,8 +100,8 @@ class TodoEditor : Fragment() {
                 calendar.set(Calendar.YEAR, year)
                 calendar.set(Calendar.MONTH, monthOfYear)
                 calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth)
-                binding.deadlineText.visibility = View.VISIBLE
-                binding.deadlineText.text =
+                deadlineText.visibility = View.VISIBLE
+                deadlineText.text =
                     DateFormat.getDateInstance(DateFormat.DEFAULT).format(calendar.time)
                 viewModel.deadline.value = calendar.time
             },
@@ -106,22 +110,21 @@ class TodoEditor : Fragment() {
             currentDate.get(Calendar.DAY_OF_MONTH)
         )
         datePickerDialog.setOnCancelListener {
-            if (viewModel.deadline.value == null) binding.deadlineSwitch.isChecked = false
+            if (viewModel.deadline.value == null) switch.isChecked = false
         }
 
-        binding.deadlineText.setOnClickListener { datePickerDialog.show() }
+        deadlineText.setOnClickListener { datePickerDialog.show() }
         if (viewModel.deadline.value != null) {
-            binding.deadlineSwitch.isChecked = true
+            switch.isChecked = true
         }
-        binding.deadlineSwitch.setOnCheckedChangeListener { _, isChecked ->
+        switch.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) datePickerDialog.show()
             else viewModel.deadline.value = null
         }
     }
 
-    private fun setupPriorityMenu(
-    ) {
-        val popupMenu = PopupMenu(context, binding.priorityContainer)
+    private fun setupPriorityMenu(priorityContainer: View, priorityText: TextView) {
+        val popupMenu = PopupMenu(context, priorityContainer)
         popupMenu.inflate(R.menu.priority_menu)
 
         val highPriorityElement: MenuItem = popupMenu.menu.getItem(2)
@@ -138,19 +141,16 @@ class TodoEditor : Fragment() {
         popupMenu.setOnMenuItemClickListener {
             when (it.itemId) {
                 R.id.no_priority_text -> {
-                    binding.priorityText.text = getString(R.string.no)
                     viewModel.priority.value = Priority.MEDIUM
                     true
                 }
 
                 R.id.low_priority_text -> {
-                    binding.priorityText.text = getString(R.string.low)
                     viewModel.priority.value = Priority.LOW
                     true
                 }
 
                 R.id.high_priority_text -> {
-                    binding.priorityText.text = getString(R.string.high)
                     viewModel.priority.value = Priority.HIGH
                     true
                 }
@@ -158,16 +158,25 @@ class TodoEditor : Fragment() {
                 else -> false
             }
         }
+
+        viewModel.priority.observe(viewLifecycleOwner) {
+            priorityText.text = when (it) {
+                Priority.LOW -> getString(R.string.low)
+                Priority.HIGH -> getString(R.string.high)
+                else -> getString(R.string.no)
+            }
+        }
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             popupMenu.setForceShowIcon(true)
         }
-        binding.priorityContainer.setOnClickListener {
+        priorityContainer.setOnClickListener {
             popupMenu.show()
         }
     }
 
-    private fun setupCloseEditorButton() {
-        binding.closeEditorButton.setOnClickListener {
+    private fun setupCloseEditorButton(closeEditorButton: View) {
+        closeEditorButton.setOnClickListener {
             findNavController().navigate(R.id.action_todoEditor_to_todoList)
         }
     }

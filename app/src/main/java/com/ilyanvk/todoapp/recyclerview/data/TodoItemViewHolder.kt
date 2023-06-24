@@ -23,7 +23,7 @@ class TodoItemViewHolder(private val binding: TodoItemBinding) :
         onTaskClick: (todoItem: TodoItem, itemView: View) -> Unit,
         onCheckboxClick: (todoItem: TodoItem) -> Unit
     ) {
-        createView(todoItem)
+        setupView(todoItem)
         binding.root.setOnClickListener {
             onTaskClick(todoItem, binding.root)
         }
@@ -32,7 +32,7 @@ class TodoItemViewHolder(private val binding: TodoItemBinding) :
         }
     }
 
-    private fun createView(todoItem: TodoItem) {
+    private fun setupView(todoItem: TodoItem) {
         // text
         text.text = todoItem.text
         val typedValue = TypedValue()
@@ -83,6 +83,12 @@ class TodoItemViewHolder(private val binding: TodoItemBinding) :
             checkbox.setImageResource(R.drawable.checkbox_checked)
         } else {
             checkbox.setImageResource(R.drawable.checkbox_unchecked_normal)
+        }
+
+        if (todoItem.isCompleted) {
+            checkbox.contentDescription = R.string.mark_not_completed.toString()
+        } else {
+            checkbox.contentDescription = R.string.mark_completed.toString()
         }
     }
 }

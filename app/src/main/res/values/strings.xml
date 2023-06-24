@@ -6,9 +6,9 @@
     <string name="high_priority">Высокий приоритет</string>
     <string name="low_priority">Низкий приоритет</string>
     <string name="mark_completed">Пометить выполненным</string>
-    <string name="mark_not_completed">Пометить не выполненным</string>
+    <string name="mark_not_completed">Пометить невыполненным</string>
     <string name="show_completed">Показать завершённые</string>
-    <string name="hide_completed">Показать завершённые</string>
+    <string name="hide_completed">Скрыть завершённые</string>
     <string name="more_info">Больше информации</string>
     <string name="add_new_task">Добавить новую задачу</string>
     <string name="close">Закрыть</string>
