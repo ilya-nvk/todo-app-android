@@ -141,7 +141,12 @@ object TodoItemsRepository {
     }
 
     fun addTodoItem(todoItem: TodoItem) {
-        todoItems.add(todoItem)
+        val index = todoItems.indexOfFirst { it.id == todoItem.id }
+        if (index != -1) {
+            todoItems[index] = todoItem.copy(modificationDate = Date())
+        } else {
+            todoItems.add(todoItem)
+        }
         onRepositoryUpdate()
     }
 
@@ -153,7 +158,7 @@ object TodoItemsRepository {
         creationDate: Date,
         modificationDate: Date?
     ) {
-        addTodoItem(
+        this.addTodoItem(
             TodoItem(
                 (currentId++).toString(),
                 text,
@@ -164,13 +169,6 @@ object TodoItemsRepository {
                 modificationDate
             )
         )
-    }
-
-    fun updateTodoItem(todoItem: TodoItem) {
-        val newTodoItem = todoItem.copy(modificationDate = Date())
-        val index = todoItems.indexOfFirst { it.id == todoItem.id }
-        todoItems[index] = newTodoItem
-        onRepositoryUpdate()
     }
 
     fun deleteTodoItem(todoItem: TodoItem) {

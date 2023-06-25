@@ -43,7 +43,7 @@ class TodoListViewModel : ViewModel() {
             onCheckboxClick = { todoItem ->
                 val newTodoItem =
                     todoItem.copy(isCompleted = !todoItem.isCompleted)
-                TodoItemsRepository.updateTodoItem(newTodoItem)
+                TodoItemsRepository.addTodoItem(newTodoItem)
             })
     }
 }

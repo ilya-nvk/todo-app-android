@@ -34,7 +34,7 @@ class TodoEditorViewModel : ViewModel() {
                 deadline = deadline.value,
                 modificationDate = Date()
             )
-            TodoItemsRepository.updateTodoItem(newTodoItem)
+            TodoItemsRepository.addTodoItem(newTodoItem)
         }
         if (todoItem.value == null) {
             TodoItemsRepository.addTodoItem(
