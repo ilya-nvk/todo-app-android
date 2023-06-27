@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.navigation.Navigation
 import com.ilyanvk.todoapp.R
 import com.ilyanvk.todoapp.recyclerview.TodoItemAdapter
-import com.ilyanvk.todoapp.recyclerview.data.TodoItemsRepository
+import com.ilyanvk.todoapp.data.TodoItemsRepository
 
 class TodoListViewModel : ViewModel() {
     val todoItemsAdapter = setupTodoItemsAdapter()

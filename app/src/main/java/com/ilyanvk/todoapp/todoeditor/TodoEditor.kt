@@ -21,7 +21,7 @@ import androidx.navigation.fragment.findNavController
 import com.google.android.material.switchmaterial.SwitchMaterial
 import com.ilyanvk.todoapp.R
 import com.ilyanvk.todoapp.databinding.FragmentTodoEditorBinding
-import com.ilyanvk.todoapp.recyclerview.data.Priority
+import com.ilyanvk.todoapp.data.Priority
 import java.text.DateFormat
 import java.util.Calendar
 
@@ -102,8 +102,8 @@ class TodoEditor : Fragment() {
                 calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth)
                 deadlineText.visibility = View.VISIBLE
                 deadlineText.text =
-                    DateFormat.getDateInstance(DateFormat.DEFAULT).format(calendar.time)
-                viewModel.deadline.value = calendar.time
+                    DateFormat.getDateInstance(DateFormat.DEFAULT).format(calendar.timeInMillis)
+                viewModel.deadline.value = calendar.timeInMillis
             },
             currentDate.get(Calendar.YEAR),
             currentDate.get(Calendar.MONTH),

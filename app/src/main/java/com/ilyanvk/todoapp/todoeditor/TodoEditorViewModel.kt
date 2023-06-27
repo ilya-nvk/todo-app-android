@@ -2,16 +2,15 @@ package com.ilyanvk.todoapp.todoeditor
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.ilyanvk.todoapp.recyclerview.data.Priority
-import com.ilyanvk.todoapp.recyclerview.data.TodoItem
-import com.ilyanvk.todoapp.recyclerview.data.TodoItemsRepository
-import java.util.Date
+import com.ilyanvk.todoapp.data.Priority
+import com.ilyanvk.todoapp.data.TodoItem
+import com.ilyanvk.todoapp.data.TodoItemsRepository
 
 class TodoEditorViewModel : ViewModel() {
     val todoItem = MutableLiveData<TodoItem?>()
     val text = MutableLiveData<String>()
     val priority = MutableLiveData<Priority>()
-    val deadline = MutableLiveData<Date?>()
+    val deadline = MutableLiveData<Long?>()
 
     init {
         todoItem.value = TodoItemsRepository.toEdit
@@ -32,18 +31,17 @@ class TodoEditorViewModel : ViewModel() {
                 text = newText,
                 priority = priority.value ?: Priority.MEDIUM,
                 deadline = deadline.value,
-                modificationDate = Date()
+                modificationDate = System.currentTimeMillis()
             )
             TodoItemsRepository.addTodoItem(newTodoItem)
         }
         if (todoItem.value == null) {
             TodoItemsRepository.addTodoItem(
-                newText,
-                priority.value ?: Priority.MEDIUM,
-                deadline.value,
-                false,
-                Date(),
-                null
+                TodoItem(
+                    text = newText,
+                    priority = priority.value ?: Priority.MEDIUM,
+                    deadline = deadline.value,
+                )
             )
         }
     }

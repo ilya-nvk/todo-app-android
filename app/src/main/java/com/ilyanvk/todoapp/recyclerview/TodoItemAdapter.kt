@@ -6,8 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.ilyanvk.todoapp.databinding.TodoItemBinding
-import com.ilyanvk.todoapp.recyclerview.data.TodoItem
-import com.ilyanvk.todoapp.recyclerview.data.TodoItemViewHolder
+import com.ilyanvk.todoapp.data.TodoItem
 import com.ilyanvk.todoapp.recyclerview.domain.CommonCallbackImpl
 
 class TodoItemAdapter(

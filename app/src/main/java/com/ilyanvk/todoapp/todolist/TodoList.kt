@@ -15,7 +15,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.ilyanvk.todoapp.R
 import com.ilyanvk.todoapp.databinding.FragmentTodoListBinding
 import com.ilyanvk.todoapp.recyclerview.TodoItemAdapter
-import com.ilyanvk.todoapp.recyclerview.data.TodoItemsRepository
+import com.ilyanvk.todoapp.data.TodoItemsRepository
 
 class TodoList : Fragment() {
     private val viewModel: TodoListViewModel by viewModels()
