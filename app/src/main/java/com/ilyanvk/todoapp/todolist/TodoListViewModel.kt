@@ -2,10 +2,14 @@ package com.ilyanvk.todoapp.todolist
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.Navigation
 import com.ilyanvk.todoapp.R
-import com.ilyanvk.todoapp.recyclerview.TodoItemAdapter
 import com.ilyanvk.todoapp.data.TodoItemsRepository
+import com.ilyanvk.todoapp.recyclerview.TodoItemAdapter
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 class TodoListViewModel : ViewModel() {
     val todoItemsAdapter = setupTodoItemsAdapter()
@@ -13,22 +17,17 @@ class TodoListViewModel : ViewModel() {
     val showCompleted = MutableLiveData<Boolean>()
 
     init {
-        setupRepository(todoItemsAdapter)
+        setupRepository()
         setupCompletedVisibilityIcon()
-        completedNumber.value = TodoItemsRepository.countCompletedTodoItems()
     }
 
     fun onVisibilityIconClick() {
-        showCompleted.value = !TodoItemsRepository.showCompleted
-        TodoItemsRepository.showCompleted = showCompleted.value == true
+        TodoItemsRepository.showCompleted = !TodoItemsRepository.showCompleted
+        showCompleted.value = TodoItemsRepository.showCompleted
     }
 
-    private fun setupRepository(todoItemsAdapter: TodoItemAdapter) {
-        TodoItemsRepository.onRepositoryUpdate = {
-            todoItemsAdapter.todoItems = TodoItemsRepository.getTodoItems()
-            completedNumber.value =
-                TodoItemsRepository.countCompletedTodoItems()
-        }
+    private fun setupRepository() {
+        TodoItemsRepository.onRepositoryUpdate = ::updateData
     }
 
     private fun setupCompletedVisibilityIcon() {
@@ -41,9 +40,20 @@ class TodoListViewModel : ViewModel() {
             Navigation.findNavController(itemView).navigate(R.id.action_todoList_to_todoEditor)
         },
             onCheckboxClick = { todoItem ->
-                val newTodoItem =
-                    todoItem.copy(isCompleted = !todoItem.isCompleted)
-                TodoItemsRepository.addTodoItem(newTodoItem)
+                viewModelScope.launch(Dispatchers.IO) {
+                    TodoItemsRepository.changeCompletionOfTodoItem(todoItem)
+                }
             })
+    }
+
+    fun updateData() {
+        viewModelScope.launch(Dispatchers.IO) {
+            TodoItemsRepository.getTodoItems().collectLatest {
+                todoItemsAdapter.submitList(it)
+            }
+        }
+        viewModelScope.launch(Dispatchers.IO) {
+            completedNumber.postValue(TodoItemsRepository.countCompletedTodoItems())
+        }
     }
 }

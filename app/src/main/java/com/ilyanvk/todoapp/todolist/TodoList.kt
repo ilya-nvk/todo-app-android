@@ -15,7 +15,6 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.ilyanvk.todoapp.R
 import com.ilyanvk.todoapp.databinding.FragmentTodoListBinding
 import com.ilyanvk.todoapp.recyclerview.TodoItemAdapter
-import com.ilyanvk.todoapp.data.TodoItemsRepository
 
 class TodoList : Fragment() {
     private val viewModel: TodoListViewModel by viewModels()
@@ -34,6 +33,7 @@ class TodoList : Fragment() {
         setupCompletedNumberText(binding.completed)
         setupVisibilityIcon(binding.completedVisibility)
         setupFloatingActionButton(binding.newTodoFloatingActionButton)
+        viewModel.updateData()
 
         return view
     }
@@ -68,7 +68,6 @@ class TodoList : Fragment() {
         val layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
         todoItemsRecyclerView.adapter = todoItemsAdapter
         todoItemsRecyclerView.layoutManager = layoutManager
-        todoItemsAdapter.todoItems = TodoItemsRepository.getTodoItems()
     }
 
     override fun onDestroyView() {

@@ -2,9 +2,11 @@ package com.ilyanvk.todoapp.todoeditor
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.ilyanvk.todoapp.data.Priority
 import com.ilyanvk.todoapp.data.TodoItem
 import com.ilyanvk.todoapp.data.TodoItemsRepository
+import kotlinx.coroutines.launch
 
 class TodoEditorViewModel : ViewModel() {
     val todoItem = MutableLiveData<TodoItem?>()
@@ -20,7 +22,7 @@ class TodoEditorViewModel : ViewModel() {
         TodoItemsRepository.toEdit = null
     }
 
-    fun saveTodo(input: String) {
+    fun saveTodo(input: String) = viewModelScope.launch {
         val newText = input.trim()
         if (newText == "") {
             throw Exception()
@@ -33,7 +35,7 @@ class TodoEditorViewModel : ViewModel() {
                 deadline = deadline.value,
                 modificationDate = System.currentTimeMillis()
             )
-            TodoItemsRepository.addTodoItem(newTodoItem)
+            TodoItemsRepository.updateTodoItem(newTodoItem)
         }
         if (todoItem.value == null) {
             TodoItemsRepository.addTodoItem(
@@ -46,7 +48,7 @@ class TodoEditorViewModel : ViewModel() {
         }
     }
 
-    fun deleteTodoItem() {
+    fun deleteTodoItem() = viewModelScope.launch {
         todoItem.value?.let { TodoItemsRepository.deleteTodoItem(it) }
     }
 }
