@@ -8,7 +8,6 @@ import com.ilyanvk.todoapp.R
 import com.ilyanvk.todoapp.data.TodoItemsRepository
 import com.ilyanvk.todoapp.recyclerview.TodoItemAdapter
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 class TodoListViewModel : ViewModel() {
@@ -48,8 +47,11 @@ class TodoListViewModel : ViewModel() {
 
     fun updateData() {
         viewModelScope.launch(Dispatchers.IO) {
-            TodoItemsRepository.getTodoItems().collectLatest {
-                todoItemsAdapter.submitList(it)
+            TodoItemsRepository.getTodoItems().collect {
+                when (TodoItemsRepository.showCompleted) {
+                    false -> todoItemsAdapter.submitList(it.filter { todoItem -> !todoItem.isCompleted })
+                    else -> todoItemsAdapter.submitList(it)
+                }
             }
         }
         viewModelScope.launch(Dispatchers.IO) {

@@ -1,7 +1,6 @@
 package com.ilyanvk.todoapp.data
 
 import com.ilyanvk.todoapp.data.database.TodoItemDao
-import kotlinx.coroutines.flow.Flow
 
 object TodoItemsRepository {
     lateinit var dao: TodoItemDao
@@ -13,12 +12,7 @@ object TodoItemsRepository {
             onRepositoryUpdate()
         }
 
-    fun getTodoItems(): Flow<List<TodoItem>> {
-        return when (showCompleted) {
-            true -> dao.getAll()
-            false -> dao.getUncompleted()
-        }
-    }
+    fun getTodoItems() = dao.getAll()
 
     suspend fun addTodoItem(todoItem: TodoItem) {
         dao.insert(
