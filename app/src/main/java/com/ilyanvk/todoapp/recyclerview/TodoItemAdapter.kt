@@ -3,27 +3,15 @@ package com.ilyanvk.todoapp.recyclerview
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.ListAdapter
+import com.ilyanvk.todoapp.data.TodoItem
 import com.ilyanvk.todoapp.databinding.TodoItemBinding
-import com.ilyanvk.todoapp.recyclerview.data.TodoItem
-import com.ilyanvk.todoapp.recyclerview.data.TodoItemViewHolder
-import com.ilyanvk.todoapp.recyclerview.domain.CommonCallbackImpl
+import com.ilyanvk.todoapp.recyclerview.domain.DiffUtilCallbackImpl
 
 class TodoItemAdapter(
     private val onTaskClick: (todoItem: TodoItem, itemView: View) -> Unit,
     private val onCheckboxClick: (todoItem: TodoItem) -> Unit
-) :
-    RecyclerView.Adapter<TodoItemViewHolder>() {
-    var todoItems = listOf<TodoItem>()
-        set(value) {
-            val callback = CommonCallbackImpl(oldItems = field,
-                newItems = value,
-                areItemsTheSameImpl = { oldItem, newItem -> oldItem.id == newItem.id })
-            field = value
-            val diffResult = DiffUtil.calculateDiff(callback)
-            diffResult.dispatchUpdatesTo(this)
-        }
+) : ListAdapter<TodoItem, TodoItemViewHolder>(DiffUtilCallbackImpl()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TodoItemViewHolder {
         val binding = TodoItemBinding
@@ -31,9 +19,7 @@ class TodoItemAdapter(
         return TodoItemViewHolder(binding)
     }
 
-    override fun getItemCount() = todoItems.size
-
     override fun onBindViewHolder(holder: TodoItemViewHolder, position: Int) {
-        holder.onBind(todoItems[position], onTaskClick, onCheckboxClick)
+        holder.onBind(getItem(position), onTaskClick, onCheckboxClick)
     }
 }

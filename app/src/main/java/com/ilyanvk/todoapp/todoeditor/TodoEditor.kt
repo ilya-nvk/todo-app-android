@@ -13,15 +13,14 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.PopupMenu
 import android.widget.TextView
-import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.switchmaterial.SwitchMaterial
 import com.ilyanvk.todoapp.R
+import com.ilyanvk.todoapp.data.Priority
 import com.ilyanvk.todoapp.databinding.FragmentTodoEditorBinding
-import com.ilyanvk.todoapp.recyclerview.data.Priority
 import java.text.DateFormat
 import java.util.Calendar
 
@@ -70,12 +69,8 @@ class TodoEditor : Fragment() {
 
     private fun setupSaveTaskButton(saveTaskButton: View, editText: EditText) {
         saveTaskButton.setOnClickListener {
-            try {
-                viewModel.saveTodo(editText.text.toString())
+            viewModel.saveTodo(editText.text.toString(), requireContext()) {
                 findNavController().navigate(R.id.action_todoEditor_to_todoList)
-            } catch (e: Exception) {
-                Toast.makeText(requireContext(), R.string.empty_task_message, Toast.LENGTH_SHORT)
-                    .show()
             }
         }
     }
@@ -84,8 +79,7 @@ class TodoEditor : Fragment() {
         viewModel.deadline.observe(viewLifecycleOwner) {
             if (it != null) {
                 deadlineText.visibility = View.VISIBLE
-                deadlineText.text =
-                    DateFormat.getDateInstance(DateFormat.DEFAULT).format(it)
+                deadlineText.text = DateFormat.getDateInstance(DateFormat.DEFAULT).format(it)
             } else {
                 deadlineText.visibility = View.GONE
             }
@@ -102,8 +96,8 @@ class TodoEditor : Fragment() {
                 calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth)
                 deadlineText.visibility = View.VISIBLE
                 deadlineText.text =
-                    DateFormat.getDateInstance(DateFormat.DEFAULT).format(calendar.time)
-                viewModel.deadline.value = calendar.time
+                    DateFormat.getDateInstance(DateFormat.DEFAULT).format(calendar.timeInMillis)
+                viewModel.deadline.value = calendar.timeInMillis
             },
             currentDate.get(Calendar.YEAR),
             currentDate.get(Calendar.MONTH),

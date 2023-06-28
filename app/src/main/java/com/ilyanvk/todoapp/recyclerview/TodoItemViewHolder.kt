@@ -1,4 +1,4 @@
-package com.ilyanvk.todoapp.recyclerview.data
+package com.ilyanvk.todoapp.recyclerview
 
 import android.graphics.Paint
 import android.util.TypedValue
@@ -7,6 +7,8 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.ilyanvk.todoapp.R
+import com.ilyanvk.todoapp.data.Priority
+import com.ilyanvk.todoapp.data.TodoItem
 import com.ilyanvk.todoapp.databinding.TodoItemBinding
 import java.text.DateFormat
 
