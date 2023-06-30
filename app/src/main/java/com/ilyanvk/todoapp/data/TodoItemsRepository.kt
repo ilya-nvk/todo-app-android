@@ -41,27 +41,26 @@ object TodoItemsRepository {
             creationDate = todoItem.creationDate
         )
         dao.insert(newTodoItem)
-        //addTodoItemOnServer(newTodoItem)
+        addTodoItemOnServer(newTodoItem)
         onRepositoryUpdate()
     }
 
     suspend fun updateTodoItem(todoItem: TodoItem) {
         dao.update(todoItem)
-        //updateTodoItemOnServer(todoItem)
+        updateTodoItemOnServer(todoItem)
         onRepositoryUpdate()
     }
 
     suspend fun deleteTodoItem(todoItem: TodoItem) {
         dao.delete(todoItem)
-        deleteTodoItem(todoItem)
+        deleteTodoItemFromServer(todoItem)
         onRepositoryUpdate()
     }
 
     suspend fun changeCompletionOfTodoItem(todoItem: TodoItem) {
         updateTodoItem(
             todoItem.copy(
-                isCompleted = !todoItem.isCompleted,
-                modificationDate = System.currentTimeMillis()
+                isCompleted = !todoItem.isCompleted, modificationDate = System.currentTimeMillis()
             )
         )
     }
@@ -105,9 +104,9 @@ object TodoItemsRepository {
     }
 
 
-    private suspend fun deleteTodoItemFromServer(todoItemId: String) {
+    private suspend fun deleteTodoItemFromServer(todoItem: TodoItem) {
         try {
-            val response = api.deleteTodoItem(sharedPreferences.revisionId, todoItemId)
+            val response = api.deleteTodoItem(sharedPreferences.revisionId, todoItem.id)
             if (response.isSuccessful) {
                 response.body()?.let { sharedPreferences.revisionId = it.revision }
             } else {

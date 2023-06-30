@@ -20,10 +20,7 @@ interface TodoItemApi {
         @Header("X-Last-Known-Revision") revision: Int, @Body body: TodoItemApiRequestList
     ): Response<TodoItemApiResponseList>
 
-    @GET("list/{id}")
-    suspend fun getTodoItem(@Path("id") id: String): Response<TodoItemApiResponse>
-
-    @POST("list/{id}")
+    @POST("list")
     suspend fun addTodoItem(
         @Header("X-Last-Known-Revision") revision: Int, @Body body: TodoItemApiRequest
     ): Response<TodoItemApiResponse>

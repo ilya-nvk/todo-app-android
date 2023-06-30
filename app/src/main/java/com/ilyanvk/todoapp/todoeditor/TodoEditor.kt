@@ -17,11 +17,16 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.switchmaterial.SwitchMaterial
 import com.ilyanvk.todoapp.R
 import com.ilyanvk.todoapp.data.Priority
 import com.ilyanvk.todoapp.databinding.FragmentTodoEditorBinding
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Dispatchers.Main
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.text.DateFormat
 import java.util.Calendar
 
@@ -63,23 +68,43 @@ class TodoEditor : Fragment() {
             )
         }
         deleteButton.setOnClickListener {
-            viewModel.deleteTodoItem()
-            findNavController().navigate(R.id.action_todoEditor_to_todoList)
+            lifecycleScope.launch(Dispatchers.IO) {
+                viewModel.deleteTodoItem()
+                withContext(Main) {
+                    findNavController().navigate(R.id.action_todoEditor_to_todoList)
+                }
+            }
+
         }
     }
 
-    private fun setupSaveTaskButton(saveTaskButton: View, editText: EditText) {
+    private fun setupSaveTaskButton(
+        saveTaskButton: View, editText: EditText
+    ) {
         saveTaskButton.setOnClickListener {
-            try {
-                viewModel.saveTodo(editText.text.toString())
-                findNavController().navigate(R.id.action_todoEditor_to_todoList)
-            } catch (e: Exception) {
-                Toast.makeText(
-                    requireContext(), getString(R.string.empty_task_message), Toast.LENGTH_SHORT
-                ).show()
+            lifecycleScope.launch(Dispatchers.IO) {
+                var isOperationSuccessful = false
+                try {
+                    viewModel.saveTodo(editText.text.toString())
+                    isOperationSuccessful = true
+                } catch (e: Exception) {
+                    withContext(Main) {
+                        Toast.makeText(
+                            requireContext(),
+                            getString(R.string.empty_task_message),
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
+                if (isOperationSuccessful) {
+                    withContext(Main) {
+                        findNavController().navigate(R.id.action_todoEditor_to_todoList)
+                    }
+                }
             }
         }
     }
+
 
     private fun setupDeadlineControl(deadlineText: TextView, switch: SwitchMaterial) {
         viewModel.deadline.observe(viewLifecycleOwner) {
