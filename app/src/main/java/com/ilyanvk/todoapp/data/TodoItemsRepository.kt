@@ -20,6 +20,7 @@ object TodoItemsRepository {
     var createSnackbar: (Int) -> Unit = {}
 
     var toEdit: TodoItem? = null
+    var isDataLoaded = false
     var connectionAvailable = true
     var showCompleted = true
         set(value) {
@@ -64,12 +65,11 @@ object TodoItemsRepository {
     }
 
     suspend fun changeCompletionOfTodoItem(todoItem: TodoItem) {
-        val newTodoItem = todoItem.copy(
-            isCompleted = !todoItem.isCompleted, modificationDate = System.currentTimeMillis()
+        updateTodoItem(
+            todoItem.copy(
+                isCompleted = !todoItem.isCompleted, modificationDate = System.currentTimeMillis()
+            )
         )
-        dao.update(newTodoItem)
-        updateTodoItemOnServer(todoItem)
-        onRepositoryUpdate()
     }
 
     private suspend fun addTodoItemOnServer(todoItem: TodoItem) {
@@ -149,20 +149,20 @@ object TodoItemsRepository {
         } catch (e: Exception) {
             handleServerError(Error.UNKNOWN.code)
         }
+        isDataLoaded = true
         onRepositoryUpdate()
     }
 
     suspend fun syncTodoItems(notify: Boolean = false) {
         try {
-            val localItems = dao.getAll()
-            val revision = sharedPreferences.revision
-            val requestList = TodoItemApiRequestList("ok", localItems.map {
-                TodoItemServer.fromTodoItem(
-                    it, sharedPreferences.deviceId ?: "null"
-                )
-            })
-
             retryWithDelay(3) {
+                val localItems = dao.getAll()
+                val revision = sharedPreferences.revision
+                val requestList = TodoItemApiRequestList("ok", localItems.map {
+                    TodoItemServer.fromTodoItem(
+                        it, sharedPreferences.deviceId ?: "null"
+                    )
+                })
                 val response = api.updateTodoItemsList(revision, requestList)
                 if (response.isSuccessful) {
                     val responseData = response.body()
@@ -210,7 +210,7 @@ object TodoItemsRepository {
         }
     }
 
-    private suspend fun retryWithDelay(
+    suspend fun retryWithDelay(
         retries: Int, block: suspend () -> Unit
     ) {
         var lastException: Exception? = null

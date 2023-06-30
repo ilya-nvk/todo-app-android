@@ -7,7 +7,6 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.Toast
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
@@ -18,9 +17,8 @@ import com.ilyanvk.todoapp.data.AppSettings
 import com.ilyanvk.todoapp.data.TodoItemsRepository
 import com.ilyanvk.todoapp.data.database.TodoItemDatabase
 import com.ilyanvk.todoapp.data.retrofit.ApiClient
+import com.ilyanvk.todoapp.data.workmanager.SyncWorker
 import com.ilyanvk.todoapp.databinding.ActivityMainBinding
-import com.ilyanvk.todoapp.todoeditor.TodoEditorViewModel
-import com.ilyanvk.todoapp.todolist.TodoListViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -51,15 +49,19 @@ class MainActivity : AppCompatActivity() {
             createSnackbar = { message -> showErrorSnackbar(view, getString(message)) }
         }
 
-        lifecycleScope.launch(Dispatchers.IO) { TodoItemsRepository.getTodoItemsFromServer() }
+        lifecycleScope.launch(Dispatchers.IO) {
+            TodoItemsRepository.getTodoItemsFromServer()
+        }
 
         connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 
         networkCallback = object : ConnectivityManager.NetworkCallback() {
             override fun onAvailable(network: Network) {
                 TodoItemsRepository.connectionAvailable = true
-                lifecycleScope.launch(Dispatchers.IO) {
-                    TodoItemsRepository.syncTodoItems()
+                if (TodoItemsRepository.isDataLoaded) {
+                    lifecycleScope.launch(Dispatchers.IO) {
+                        TodoItemsRepository.syncTodoItems()
+                    }
                 }
             }
 
@@ -67,6 +69,8 @@ class MainActivity : AppCompatActivity() {
                 TodoItemsRepository.connectionAvailable = false
             }
         }
+
+        SyncWorker.enqueuePeriodicSync(applicationContext)
 
         val navHostFragment =
             supportFragmentManager.findFragmentById(binding.fragmentContainer.id) as NavHostFragment
