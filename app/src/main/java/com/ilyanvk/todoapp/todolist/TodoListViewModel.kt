@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.Navigation
 import com.ilyanvk.todoapp.R
 import com.ilyanvk.todoapp.data.TodoItemsRepository
+import com.ilyanvk.todoapp.data.retrofit.TodoItemApi
 import com.ilyanvk.todoapp.recyclerview.TodoItemAdapter
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -23,6 +24,12 @@ class TodoListViewModel : ViewModel() {
     fun onVisibilityIconClick() {
         TodoItemsRepository.showCompleted = !TodoItemsRepository.showCompleted
         showCompleted.value = TodoItemsRepository.showCompleted
+    }
+
+    fun onSwipeRefresh() {
+        viewModelScope.launch(Dispatchers.IO) {
+            TodoItemsRepository.syncTodoItems()
+        }
     }
 
     private fun setupRepository() {
@@ -47,7 +54,7 @@ class TodoListViewModel : ViewModel() {
 
     fun updateData() {
         viewModelScope.launch(Dispatchers.IO) {
-            TodoItemsRepository.getTodoItems().collect {
+            TodoItemsRepository.getAllTodoItems().collect {
                 when (TodoItemsRepository.showCompleted) {
                     false -> todoItemsAdapter.submitList(it.filter { todoItem -> !todoItem.isCompleted })
                     else -> todoItemsAdapter.submitList(it)

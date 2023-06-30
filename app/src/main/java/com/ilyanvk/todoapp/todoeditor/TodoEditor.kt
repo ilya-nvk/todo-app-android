@@ -70,7 +70,7 @@ class TodoEditor : Fragment() {
     private fun setupSaveTaskButton(saveTaskButton: View, editText: EditText) {
         saveTaskButton.setOnClickListener {
             viewModel.saveTodo(editText.text.toString(), requireContext()) {
-                findNavController().navigate(R.id.action_todoEditor_to_todoList)
+                findNavController().navigate(R.id.todoList)
             }
         }
     }

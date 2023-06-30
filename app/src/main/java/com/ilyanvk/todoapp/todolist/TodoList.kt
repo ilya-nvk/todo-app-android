@@ -11,6 +11,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.ilyanvk.todoapp.R
 import com.ilyanvk.todoapp.databinding.FragmentTodoListBinding
@@ -30,12 +31,20 @@ class TodoList : Fragment() {
         val view = binding.root
 
         setupRecyclerView(viewModel.todoItemsAdapter)
+        setupSwipeRefresh(binding.swipeRefreshLayout)
         setupCompletedNumberText(binding.completed)
         setupVisibilityIcon(binding.completedVisibility)
         setupFloatingActionButton(binding.newTodoFloatingActionButton)
         viewModel.updateData()
 
         return view
+    }
+
+    private fun setupSwipeRefresh(swipeRefreshLayout: SwipeRefreshLayout) {
+        swipeRefreshLayout.setOnRefreshListener {
+            viewModel.onSwipeRefresh()
+            swipeRefreshLayout.isRefreshing = false
+        }
     }
 
     private fun setupCompletedNumberText(textView: TextView) {

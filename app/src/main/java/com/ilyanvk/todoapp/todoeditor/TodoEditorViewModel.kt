@@ -9,6 +9,7 @@ import com.ilyanvk.todoapp.R
 import com.ilyanvk.todoapp.data.Priority
 import com.ilyanvk.todoapp.data.TodoItem
 import com.ilyanvk.todoapp.data.TodoItemsRepository
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class TodoEditorViewModel : ViewModel() {
@@ -57,7 +58,7 @@ class TodoEditorViewModel : ViewModel() {
             }
         }
 
-    fun deleteTodoItem() = viewModelScope.launch {
+    fun deleteTodoItem() = viewModelScope.launch(Dispatchers.IO) {
         todoItem.value?.let { TodoItemsRepository.deleteTodoItem(it) }
     }
 }
