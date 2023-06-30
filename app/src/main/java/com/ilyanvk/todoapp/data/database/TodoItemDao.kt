@@ -28,13 +28,10 @@ interface TodoItemDao {
     suspend fun clear()
 
     @Query("SELECT * FROM TodoItem ORDER BY deadline")
-    fun getAll(): Flow<List<TodoItem>>
-
-    @Query("SELECT * FROM TodoItem ORDER BY deadline")
-    fun getAllAsList(): List<TodoItem>
+    fun getAll(): List<TodoItem>
 
     @Query("SELECT * FROM TodoItem WHERE isCompleted = 0  ORDER BY deadline")
-    fun getUncompleted(): Flow<List<TodoItem>>
+    fun getUncompleted(): List<TodoItem>
 
     @Query("SELECT COUNT(*) FROM TodoItem WHERE isCompleted = 1")
     fun countCompleted(): Int

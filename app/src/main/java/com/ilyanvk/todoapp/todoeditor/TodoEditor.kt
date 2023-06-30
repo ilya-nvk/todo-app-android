@@ -13,6 +13,7 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.PopupMenu
 import android.widget.TextView
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -69,8 +70,13 @@ class TodoEditor : Fragment() {
 
     private fun setupSaveTaskButton(saveTaskButton: View, editText: EditText) {
         saveTaskButton.setOnClickListener {
-            viewModel.saveTodo(editText.text.toString(), requireContext()) {
-                findNavController().navigate(R.id.todoList)
+            try {
+                viewModel.saveTodo(editText.text.toString())
+                findNavController().navigate(R.id.action_todoEditor_to_todoList)
+            } catch (e: Exception) {
+                Toast.makeText(
+                    requireContext(), getString(R.string.empty_task_message), Toast.LENGTH_SHORT
+                ).show()
             }
         }
     }

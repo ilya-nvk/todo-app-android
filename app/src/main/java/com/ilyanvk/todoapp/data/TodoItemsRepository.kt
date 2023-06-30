@@ -21,7 +21,12 @@ object TodoItemsRepository {
             onRepositoryUpdate()
         }
 
-    fun getAllTodoItems() = dao.getAll()
+    fun getAllTodoItems(): List<TodoItem> {
+        return when (showCompleted) {
+            false -> dao.getUncompleted()
+            else -> dao.getAll()
+        }
+    }
 
     fun countCompletedTodoItems(): Int {
         return dao.countCompleted()
@@ -36,13 +41,13 @@ object TodoItemsRepository {
             creationDate = todoItem.creationDate
         )
         dao.insert(newTodoItem)
-        addTodoItemOnServer(newTodoItem)
+        //addTodoItemOnServer(newTodoItem)
         onRepositoryUpdate()
     }
 
     suspend fun updateTodoItem(todoItem: TodoItem) {
         dao.update(todoItem)
-        updateTodoItemOnServer(todoItem)
+        //updateTodoItemOnServer(todoItem)
         onRepositoryUpdate()
     }
 
@@ -131,7 +136,7 @@ object TodoItemsRepository {
 
     suspend fun syncTodoItems() {
         try {
-            val localItems = dao.getAllAsList()
+            val localItems = dao.getAll()
             val revision = sharedPreferences.revisionId
             val requestList = TodoItemApiRequestList("ok", localItems.map {
                 TodoItemServer.fromTodoItem(
