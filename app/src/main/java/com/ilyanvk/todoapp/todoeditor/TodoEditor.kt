@@ -13,9 +13,10 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.PopupMenu
 import android.widget.TextView
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.switchmaterial.SwitchMaterial
 import com.ilyanvk.todoapp.R
@@ -26,7 +27,7 @@ import java.util.Calendar
 
 
 class TodoEditor : Fragment() {
-    private val viewModel: TodoEditorViewModel by viewModels()
+    private val viewModel: TodoEditorViewModel by activityViewModels()
 
     private var _binding: FragmentTodoEditorBinding? = null
     private val binding get() = _binding!!
@@ -37,6 +38,7 @@ class TodoEditor : Fragment() {
         _binding = FragmentTodoEditorBinding.inflate(inflater, container, false)
         val view = binding.root
 
+        viewModel.init()
         setupDeadlineControl(binding.deadlineText, binding.deadlineSwitch)
         setupPriorityMenu(binding.priorityContainer, binding.priorityText)
         setupDeleteButton(binding.deleteIcon, binding.deleteText, binding.deleteButton)
@@ -67,13 +69,24 @@ class TodoEditor : Fragment() {
         }
     }
 
-    private fun setupSaveTaskButton(saveTaskButton: View, editText: EditText) {
+    private fun setupSaveTaskButton(
+        saveTaskButton: View, editText: EditText
+    ) {
         saveTaskButton.setOnClickListener {
-            viewModel.saveTodo(editText.text.toString(), requireContext()) {
-                findNavController().navigate(R.id.action_todoEditor_to_todoList)
+            val newText = editText.text.toString().trim()
+            if (newText.isBlank()) {
+                Toast.makeText(
+                    requireContext(),
+                    getString(R.string.empty_task_message),
+                    Toast.LENGTH_SHORT
+                ).show()
+                return@setOnClickListener
             }
+            viewModel.saveTodo(editText.text.toString())
+            findNavController().navigate(R.id.action_todoEditor_to_todoList)
         }
     }
+
 
     private fun setupDeadlineControl(deadlineText: TextView, switch: SwitchMaterial) {
         viewModel.deadline.observe(viewLifecycleOwner) {

@@ -25,6 +25,12 @@ class TodoListViewModel : ViewModel() {
         showCompleted.value = TodoItemsRepository.showCompleted
     }
 
+    fun onSwipeRefresh() {
+        viewModelScope.launch(Dispatchers.IO) {
+            TodoItemsRepository.syncTodoItems(true)
+        }
+    }
+
     private fun setupRepository() {
         TodoItemsRepository.onRepositoryUpdate = ::updateData
     }
@@ -37,24 +43,17 @@ class TodoListViewModel : ViewModel() {
         return TodoItemAdapter(onTaskClick = { todoItem, itemView ->
             TodoItemsRepository.toEdit = todoItem
             Navigation.findNavController(itemView).navigate(R.id.action_todoList_to_todoEditor)
-        },
-            onCheckboxClick = { todoItem ->
-                viewModelScope.launch(Dispatchers.IO) {
-                    TodoItemsRepository.changeCompletionOfTodoItem(todoItem)
-                }
-            })
+        }, onCheckboxClick = { todoItem ->
+            viewModelScope.launch(Dispatchers.IO) {
+                TodoItemsRepository.changeCompletionOfTodoItem(todoItem)
+            }
+        })
     }
 
     fun updateData() {
         viewModelScope.launch(Dispatchers.IO) {
-            TodoItemsRepository.getTodoItems().collect {
-                when (TodoItemsRepository.showCompleted) {
-                    false -> todoItemsAdapter.submitList(it.filter { todoItem -> !todoItem.isCompleted })
-                    else -> todoItemsAdapter.submitList(it)
-                }
-            }
-        }
-        viewModelScope.launch(Dispatchers.IO) {
+            val list = TodoItemsRepository.getAllTodoItems()
+            todoItemsAdapter.submitList(list)
             completedNumber.postValue(TodoItemsRepository.countCompletedTodoItems())
         }
     }

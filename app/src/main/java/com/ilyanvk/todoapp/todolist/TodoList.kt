@@ -6,18 +6,21 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.ilyanvk.todoapp.R
+import com.ilyanvk.todoapp.data.TodoItemsRepository
 import com.ilyanvk.todoapp.databinding.FragmentTodoListBinding
 import com.ilyanvk.todoapp.recyclerview.TodoItemAdapter
 
 class TodoList : Fragment() {
-    private val viewModel: TodoListViewModel by viewModels()
+    private val viewModel: TodoListViewModel by activityViewModels()
 
     private var _binding: FragmentTodoListBinding? = null
     private val binding get() = _binding!!
@@ -30,12 +33,25 @@ class TodoList : Fragment() {
         val view = binding.root
 
         setupRecyclerView(viewModel.todoItemsAdapter)
+        setupSwipeRefresh(binding.swipeRefreshLayout)
         setupCompletedNumberText(binding.completed)
         setupVisibilityIcon(binding.completedVisibility)
         setupFloatingActionButton(binding.newTodoFloatingActionButton)
         viewModel.updateData()
 
         return view
+    }
+
+    private fun setupSwipeRefresh(swipeRefreshLayout: SwipeRefreshLayout) {
+        swipeRefreshLayout.setOnRefreshListener {
+            if (TodoItemsRepository.connectionAvailable) {
+                viewModel.onSwipeRefresh()
+            } else {
+                Toast.makeText(activity, getString(R.string.no_connection), Toast.LENGTH_SHORT)
+                    .show()
+            }
+            swipeRefreshLayout.isRefreshing = false
+        }
     }
 
     private fun setupCompletedNumberText(textView: TextView) {
