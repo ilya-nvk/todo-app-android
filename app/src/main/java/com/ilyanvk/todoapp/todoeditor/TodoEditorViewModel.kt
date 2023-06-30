@@ -1,10 +1,8 @@
 package com.ilyanvk.todoapp.todoeditor
 
-import android.content.Context
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.ilyanvk.todoapp.R
 import com.ilyanvk.todoapp.data.Priority
 import com.ilyanvk.todoapp.data.TodoItem
 import com.ilyanvk.todoapp.data.TodoItemsRepository
