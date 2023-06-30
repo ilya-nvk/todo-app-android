@@ -1,5 +1,6 @@
 package com.ilyanvk.todoapp.data.retrofit
 
+import com.ilyanvk.todoapp.data.Constants.HEADER
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
@@ -17,23 +18,23 @@ interface TodoItemApi {
 
     @PATCH("list")
     suspend fun updateTodoItemsList(
-        @Header("X-Last-Known-Revision") revision: Int, @Body body: TodoItemApiRequestList
+        @Header(HEADER) revision: Int, @Body body: TodoItemApiRequestList
     ): Response<TodoItemApiResponseList>
 
     @POST("list")
     suspend fun addTodoItem(
-        @Header("X-Last-Known-Revision") revision: Int, @Body body: TodoItemApiRequest
+        @Header(HEADER) revision: Int, @Body body: TodoItemApiRequest
     ): Response<TodoItemApiResponse>
 
     @PUT("list/{id}")
     suspend fun updateTodoItem(
-        @Header("X-Last-Known-Revision") revision: Int,
+        @Header(HEADER) revision: Int,
         @Path("id") id: String,
         @Body body: TodoItemApiRequest
     ): Response<TodoItemApiResponse>
 
     @DELETE("list/{id}")
     suspend fun deleteTodoItem(
-        @Header("X-Last-Known-Revision") revision: Int, @Path("id") id: String
+        @Header(HEADER) revision: Int, @Path("id") id: String
     ): Response<TodoItemApiResponse>
 }

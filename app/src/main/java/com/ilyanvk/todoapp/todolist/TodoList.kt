@@ -8,7 +8,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -18,11 +18,9 @@ import com.ilyanvk.todoapp.R
 import com.ilyanvk.todoapp.data.TodoItemsRepository
 import com.ilyanvk.todoapp.databinding.FragmentTodoListBinding
 import com.ilyanvk.todoapp.recyclerview.TodoItemAdapter
-import kotlinx.coroutines.Dispatchers.Main
-import kotlinx.coroutines.withContext
 
 class TodoList : Fragment() {
-    private val viewModel: TodoListViewModel by viewModels()
+    private val viewModel: TodoListViewModel by activityViewModels()
 
     private var _binding: FragmentTodoListBinding? = null
     private val binding get() = _binding!!

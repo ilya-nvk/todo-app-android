@@ -1,22 +1,22 @@
 package com.ilyanvk.todoapp.todoeditor
 
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.ilyanvk.todoapp.data.Priority
 import com.ilyanvk.todoapp.data.TodoItem
 import com.ilyanvk.todoapp.data.TodoItemsRepository
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.cancel
+import kotlinx.coroutines.launch
 
 class TodoEditorViewModel : ViewModel() {
-    private val coroutineScope = CoroutineScope(Dispatchers.IO)
     val todoItem = MutableLiveData<TodoItem?>()
     val text = MutableLiveData<String>()
     val priority = MutableLiveData<Priority>()
     val deadline = MutableLiveData<Long?>()
 
-    init {
+    fun init() {
         todoItem.value = TodoItemsRepository.toEdit
         text.value = todoItem.value?.text ?: ""
         priority.value = todoItem.value?.priority ?: Priority.MEDIUM
@@ -24,36 +24,40 @@ class TodoEditorViewModel : ViewModel() {
         TodoItemsRepository.toEdit = null
     }
 
-    suspend fun saveTodo(input: String) {
-        val newText = input.trim()
-        if (newText == "") {
-            throw Exception()
-        }
-        todoItem.value?.let {
-            val newTodoItem = it.copy(
-                text = newText,
-                priority = priority.value ?: Priority.MEDIUM,
-                deadline = deadline.value,
-                modificationDate = System.currentTimeMillis()
-            )
-            TodoItemsRepository.updateTodoItem(newTodoItem)
-        }
-        if (todoItem.value == null) {
-            TodoItemsRepository.addTodoItem(
-                TodoItem(
-                    text = newText,
+    fun saveTodo(input: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            todoItem.value?.let {
+                val newTodoItem = it.copy(
+                    text = input,
                     priority = priority.value ?: Priority.MEDIUM,
                     deadline = deadline.value,
+                    modificationDate = System.currentTimeMillis()
                 )
-            )
+                if (newTodoItem.text == it.text && newTodoItem.priority == it.priority && newTodoItem.deadline == it.deadline) return@launch
+                TodoItemsRepository.updateTodoItem(newTodoItem)
+            }
+            if (todoItem.value == null) {
+                TodoItemsRepository.addTodoItem(
+                    TodoItem(
+                        text = input,
+                        priority = priority.value ?: Priority.MEDIUM,
+                        deadline = deadline.value,
+                    )
+                )
+            }
         }
     }
 
-    suspend fun deleteTodoItem() {
-        todoItem.value?.let { TodoItemsRepository.deleteTodoItem(it) }
+    fun deleteTodoItem() {
+        viewModelScope.launch(Dispatchers.IO) {
+            todoItem.value?.let {
+                TodoItemsRepository.deleteTodoItem(it)
+            }
+        }
     }
 
     override fun onCleared() {
-        coroutineScope.cancel()
+        super.onCleared()
+        Log.d("TodoEditorViewModel", "onCleared")
     }
 }

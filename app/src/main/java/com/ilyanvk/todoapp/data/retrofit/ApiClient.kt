@@ -1,6 +1,5 @@
 package com.ilyanvk.todoapp.data.retrofit
 
-import android.util.Log
 import com.ilyanvk.todoapp.data.Constants.AUTH_TOKEN
 import com.ilyanvk.todoapp.data.Constants.BASE_URL
 import okhttp3.Interceptor
@@ -17,21 +16,6 @@ class ApiClient {
         level = HttpLoggingInterceptor.Level.BODY
     }
 
-    private val retryInterceptor = Interceptor { chain ->
-        val request = chain.request()
-
-        var response = chain.proceed(request)
-        var tryCount = 0
-        while (!response.isSuccessful && tryCount < 3) {
-            Log.d("intercept", "Request is not successful - $tryCount")
-            tryCount++
-
-            response.close()
-            response = chain.proceed(request)
-        }
-
-        response
-    }
 
     private val authorizationInterceptor = Interceptor { chain ->
         val request =
@@ -44,7 +28,7 @@ class ApiClient {
         OkHttpClient.Builder().connectTimeout(timeoutDuration, TimeUnit.SECONDS)
             .readTimeout(timeoutDuration, TimeUnit.SECONDS)
             .writeTimeout(timeoutDuration, TimeUnit.SECONDS).addInterceptor(loggingInterceptor)
-            .addInterceptor(retryInterceptor).addInterceptor(authorizationInterceptor).build()
+            .addInterceptor(authorizationInterceptor).build()
 
     private val retrofit = Retrofit.Builder().client(httpClient).baseUrl(BASE_URL)
         .addConverterFactory(GsonConverterFactory.create()).build()

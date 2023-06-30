@@ -16,23 +16,18 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.switchmaterial.SwitchMaterial
 import com.ilyanvk.todoapp.R
 import com.ilyanvk.todoapp.data.Priority
 import com.ilyanvk.todoapp.databinding.FragmentTodoEditorBinding
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Dispatchers.Main
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.text.DateFormat
 import java.util.Calendar
 
 
 class TodoEditor : Fragment() {
-    private val viewModel: TodoEditorViewModel by viewModels()
+    private val viewModel: TodoEditorViewModel by activityViewModels()
 
     private var _binding: FragmentTodoEditorBinding? = null
     private val binding get() = _binding!!
@@ -43,6 +38,7 @@ class TodoEditor : Fragment() {
         _binding = FragmentTodoEditorBinding.inflate(inflater, container, false)
         val view = binding.root
 
+        viewModel.init()
         setupDeadlineControl(binding.deadlineText, binding.deadlineSwitch)
         setupPriorityMenu(binding.priorityContainer, binding.priorityText)
         setupDeleteButton(binding.deleteIcon, binding.deleteText, binding.deleteButton)
@@ -68,13 +64,8 @@ class TodoEditor : Fragment() {
             )
         }
         deleteButton.setOnClickListener {
-            lifecycleScope.launch(Dispatchers.IO) {
-                viewModel.deleteTodoItem()
-                withContext(Main) {
-                    findNavController().navigate(R.id.action_todoEditor_to_todoList)
-                }
-            }
-
+            viewModel.deleteTodoItem()
+            findNavController().navigate(R.id.action_todoEditor_to_todoList)
         }
     }
 
@@ -82,26 +73,17 @@ class TodoEditor : Fragment() {
         saveTaskButton: View, editText: EditText
     ) {
         saveTaskButton.setOnClickListener {
-            lifecycleScope.launch(Dispatchers.IO) {
-                var isOperationSuccessful = false
-                try {
-                    viewModel.saveTodo(editText.text.toString())
-                    isOperationSuccessful = true
-                } catch (e: Exception) {
-                    withContext(Main) {
-                        Toast.makeText(
-                            requireContext(),
-                            getString(R.string.empty_task_message),
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
-                }
-                if (isOperationSuccessful) {
-                    withContext(Main) {
-                        findNavController().navigate(R.id.action_todoEditor_to_todoList)
-                    }
-                }
+            val newText = editText.text.toString().trim()
+            if (newText.isBlank()) {
+                Toast.makeText(
+                    requireContext(),
+                    getString(R.string.empty_task_message),
+                    Toast.LENGTH_SHORT
+                ).show()
+                return@setOnClickListener
             }
+            viewModel.saveTodo(editText.text.toString())
+            findNavController().navigate(R.id.action_todoEditor_to_todoList)
         }
     }
 

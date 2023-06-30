@@ -1,6 +1,6 @@
 package com.ilyanvk.todoapp.data.retrofit
 
-enum class ErrorResponse(val code: Int) {
+enum class Error(val code: Int) {
     REVISION(400),
     AUTHORISATION(401),
     NOT_FOUND(404),

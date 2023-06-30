@@ -5,17 +5,22 @@ import android.net.ConnectivityManager
 import android.net.Network
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.room.Room
+import com.google.android.material.snackbar.Snackbar
 import com.ilyanvk.todoapp.data.AppSettings
 import com.ilyanvk.todoapp.data.TodoItemsRepository
 import com.ilyanvk.todoapp.data.database.TodoItemDatabase
 import com.ilyanvk.todoapp.data.retrofit.ApiClient
 import com.ilyanvk.todoapp.databinding.ActivityMainBinding
+import com.ilyanvk.todoapp.todoeditor.TodoEditorViewModel
+import com.ilyanvk.todoapp.todolist.TodoListViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -43,6 +48,7 @@ class MainActivity : AppCompatActivity() {
             sharedPreferences = AppSettings(applicationContext)
             onRemoteUpdate = { message -> Log.d("MainActivity", "onRemoteUpdate: $message") }
             afterSync = ::afterSync
+            createSnackbar = { message -> showErrorSnackbar(view, getString(message)) }
         }
 
         lifecycleScope.launch(Dispatchers.IO) { TodoItemsRepository.getTodoItemsFromServer() }
@@ -81,6 +87,11 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun showErrorSnackbar(view: View, message: String) {
+        view.let { rootView ->
+            Snackbar.make(rootView, message, Snackbar.LENGTH_SHORT).show()
+        }
+    }
 
     override fun onStart() {
         super.onStart()
