@@ -9,6 +9,7 @@ import com.ilyanvk.todoapp.data.TodoItemsRepository
 import com.ilyanvk.todoapp.recyclerview.TodoItemAdapter
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlin.reflect.KSuspendFunction1
 
 class TodoListViewModel : ViewModel() {
     val todoItemsAdapter = setupTodoItemsAdapter()
@@ -27,7 +28,7 @@ class TodoListViewModel : ViewModel() {
 
     fun onSwipeRefresh() {
         viewModelScope.launch(Dispatchers.IO) {
-            TodoItemsRepository.syncTodoItems()
+            TodoItemsRepository.syncTodoItems(true)
         }
     }
 

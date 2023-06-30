@@ -1,7 +1,11 @@
 package com.ilyanvk.todoapp
 
+import android.content.Context
+import android.net.ConnectivityManager
+import android.net.Network
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
@@ -14,11 +18,14 @@ import com.ilyanvk.todoapp.data.retrofit.ApiClient
 import com.ilyanvk.todoapp.databinding.ActivityMainBinding
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var navController: NavController
+    private lateinit var connectivityManager: ConnectivityManager
+    private lateinit var networkCallback: ConnectivityManager.NetworkCallback
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,12 +42,61 @@ class MainActivity : AppCompatActivity() {
             api = ApiClient().api
             sharedPreferences = AppSettings(applicationContext)
             onRemoteUpdate = { message -> Log.d("MainActivity", "onRemoteUpdate: $message") }
+            afterSync = ::afterSync
         }
 
         lifecycleScope.launch(Dispatchers.IO) { TodoItemsRepository.getTodoItemsFromServer() }
 
+        connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+
+        networkCallback = object : ConnectivityManager.NetworkCallback() {
+            override fun onAvailable(network: Network) {
+                TodoItemsRepository.connectionAvailable = true
+                lifecycleScope.launch(Dispatchers.IO) {
+                    TodoItemsRepository.syncTodoItems()
+                }
+            }
+
+            override fun onLost(network: Network) {
+                TodoItemsRepository.connectionAvailable = false
+            }
+        }
+
         val navHostFragment =
             supportFragmentManager.findFragmentById(binding.fragmentContainer.id) as NavHostFragment
         navController = navHostFragment.navController
+    }
+
+    private suspend fun afterSync(isSuccessful: Boolean) {
+        withContext(Dispatchers.Main) {
+            if (isSuccessful) {
+                Toast.makeText(
+                    applicationContext, getString(R.string.sync_successful), Toast.LENGTH_SHORT
+                ).show()
+            } else {
+                Toast.makeText(
+                    applicationContext, getString(R.string.sync_failed), Toast.LENGTH_SHORT
+                ).show()
+            }
+        }
+    }
+
+
+    override fun onStart() {
+        super.onStart()
+        registerNetworkCallback()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        unregisterNetworkCallback()
+    }
+
+    private fun registerNetworkCallback() {
+        connectivityManager.registerDefaultNetworkCallback(networkCallback)
+    }
+
+    private fun unregisterNetworkCallback() {
+        connectivityManager.unregisterNetworkCallback(networkCallback)
     }
 }

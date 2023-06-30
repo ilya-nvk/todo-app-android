@@ -21,4 +21,7 @@
     <string name="low">Низкий</string>
     <string name="high">Высокий</string>
     <string name="empty_task_message">Введите текст задачи</string>
+    <string name="no_connection">Нет соединения</string>
+    <string name="sync_successful">Синхронизация прошла успешно</string>
+    <string name="sync_failed">Синхронизация не удалась :(</string>
 </resources>

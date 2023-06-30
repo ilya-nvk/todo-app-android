@@ -11,7 +11,7 @@ class AppSettings(context: Context) {
         generateDeviceId()
     }
 
-    var revisionId: Int
+    var revision: Int
         set(value) {
             editor.putInt(REVISION_TAG, value)
             editor.apply()

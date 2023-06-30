@@ -11,10 +11,13 @@ object TodoItemsRepository {
     lateinit var dao: TodoItemDao
     lateinit var api: TodoItemApi
     lateinit var sharedPreferences: AppSettings
+    var connectionAvailable = true
 
-    var toEdit: TodoItem? = null
     var onRepositoryUpdate: () -> Unit = {}
     var onRemoteUpdate: (message: String) -> Unit = {}
+    var afterSync: suspend (Boolean) -> Unit = {}
+
+    var toEdit: TodoItem? = null
     var showCompleted = true
         set(value) {
             field = value
@@ -68,14 +71,14 @@ object TodoItemsRepository {
     private suspend fun addTodoItemOnServer(todoItem: TodoItem) {
         try {
             val response = api.addTodoItem(
-                sharedPreferences.revisionId, TodoItemApiRequest(
+                sharedPreferences.revision, TodoItemApiRequest(
                     TodoItemServer.fromTodoItem(
                         todoItem, sharedPreferences.deviceId ?: "null"
                     )
                 )
             )
             if (response.isSuccessful) {
-                response.body()?.let { sharedPreferences.revisionId = it.revision }
+                response.body()?.let { sharedPreferences.revision = it.revision }
             } else {
                 handleServerError(response.code())
             }
@@ -87,14 +90,14 @@ object TodoItemsRepository {
     private suspend fun updateTodoItemOnServer(todoItem: TodoItem) {
         try {
             val response = api.updateTodoItem(
-                sharedPreferences.revisionId, todoItem.id, TodoItemApiRequest(
+                sharedPreferences.revision, todoItem.id, TodoItemApiRequest(
                     TodoItemServer.fromTodoItem(
                         todoItem, sharedPreferences.deviceId ?: "null"
                     )
                 )
             )
             if (response.isSuccessful) {
-                response.body()?.let { sharedPreferences.revisionId = it.revision }
+                response.body()?.let { sharedPreferences.revision = it.revision }
             } else {
                 handleServerError(response.code())
             }
@@ -106,9 +109,9 @@ object TodoItemsRepository {
 
     private suspend fun deleteTodoItemFromServer(todoItem: TodoItem) {
         try {
-            val response = api.deleteTodoItem(sharedPreferences.revisionId, todoItem.id)
+            val response = api.deleteTodoItem(sharedPreferences.revision, todoItem.id)
             if (response.isSuccessful) {
-                response.body()?.let { sharedPreferences.revisionId = it.revision }
+                response.body()?.let { sharedPreferences.revision = it.revision }
             } else {
                 handleServerError(response.code())
             }
@@ -123,7 +126,7 @@ object TodoItemsRepository {
             if (response.isSuccessful) {
                 val todoItems = response.body()?.list?.map { it.toTodoItem() } ?: listOf()
                 dao.insertAll(todoItems)
-                response.body()?.let { sharedPreferences.revisionId = it.revision }
+                response.body()?.let { sharedPreferences.revision = it.revision }
             } else {
                 handleServerError(response.code())
             }
@@ -133,10 +136,10 @@ object TodoItemsRepository {
         onRepositoryUpdate()
     }
 
-    suspend fun syncTodoItems() {
+    suspend fun syncTodoItems(notify: Boolean = false) {
         try {
             val localItems = dao.getAll()
-            val revision = sharedPreferences.revisionId
+            val revision = sharedPreferences.revision
             val requestList = TodoItemApiRequestList("ok", localItems.map {
                 TodoItemServer.fromTodoItem(
                     it, sharedPreferences.deviceId ?: "null"
@@ -152,17 +155,21 @@ object TodoItemsRepository {
                     dao.clear()
                     dao.insertAll(serverItems)
 
-                    sharedPreferences.revisionId = responseData.revision
+                    sharedPreferences.revision = responseData.revision
                     onRepositoryUpdate()
                 } else {
+                    if (notify) afterSync(false)
                     handleServerError(response.code())
                 }
             } else {
+                if (notify) afterSync(false)
                 handleServerError(response.code())
             }
         } catch (e: Exception) {
+            if (notify) afterSync(false)
             handleServerError(ErrorResponse.UNKNOWN.code)
         }
+        if (notify) afterSync(true)
     }
 
     private fun handleServerError(errorCode: Int) {
@@ -180,7 +187,7 @@ object TodoItemsRepository {
             }
 
             else -> {
-                onRemoteUpdate("Uknown error")
+                onRemoteUpdate("Uknown error: $errorCode")
             }
         }
     }

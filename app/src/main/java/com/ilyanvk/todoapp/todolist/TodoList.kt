@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -14,8 +15,11 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.ilyanvk.todoapp.R
+import com.ilyanvk.todoapp.data.TodoItemsRepository
 import com.ilyanvk.todoapp.databinding.FragmentTodoListBinding
 import com.ilyanvk.todoapp.recyclerview.TodoItemAdapter
+import kotlinx.coroutines.Dispatchers.Main
+import kotlinx.coroutines.withContext
 
 class TodoList : Fragment() {
     private val viewModel: TodoListViewModel by viewModels()
@@ -42,7 +46,12 @@ class TodoList : Fragment() {
 
     private fun setupSwipeRefresh(swipeRefreshLayout: SwipeRefreshLayout) {
         swipeRefreshLayout.setOnRefreshListener {
-            viewModel.onSwipeRefresh()
+            if (TodoItemsRepository.connectionAvailable) {
+                viewModel.onSwipeRefresh()
+            } else {
+                Toast.makeText(activity, getString(R.string.no_connection), Toast.LENGTH_SHORT)
+                    .show()
+            }
             swipeRefreshLayout.isRefreshing = false
         }
     }
