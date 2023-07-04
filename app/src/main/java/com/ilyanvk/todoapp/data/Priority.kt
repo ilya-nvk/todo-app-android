@@ -1,4 +1,4 @@
-package com.ilyanvk.todoapp.recyclerview.data
+package com.ilyanvk.todoapp.data
 
 enum class Priority {
     LOW, MEDIUM, HIGH

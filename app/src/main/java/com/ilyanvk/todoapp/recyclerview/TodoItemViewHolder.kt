@@ -1,4 +1,4 @@
-package com.ilyanvk.todoapp.recyclerview.data
+package com.ilyanvk.todoapp.recyclerview
 
 import android.graphics.Paint
 import android.util.TypedValue
@@ -7,6 +7,8 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.ilyanvk.todoapp.R
+import com.ilyanvk.todoapp.data.Priority
+import com.ilyanvk.todoapp.data.TodoItem
 import com.ilyanvk.todoapp.databinding.TodoItemBinding
 import java.text.DateFormat
 
@@ -23,7 +25,7 @@ class TodoItemViewHolder(private val binding: TodoItemBinding) :
         onTaskClick: (todoItem: TodoItem, itemView: View) -> Unit,
         onCheckboxClick: (todoItem: TodoItem) -> Unit
     ) {
-        createView(todoItem)
+        setupView(todoItem)
         binding.root.setOnClickListener {
             onTaskClick(todoItem, binding.root)
         }
@@ -32,7 +34,7 @@ class TodoItemViewHolder(private val binding: TodoItemBinding) :
         }
     }
 
-    private fun createView(todoItem: TodoItem) {
+    private fun setupView(todoItem: TodoItem) {
         // text
         text.text = todoItem.text
         val typedValue = TypedValue()
@@ -83,6 +85,12 @@ class TodoItemViewHolder(private val binding: TodoItemBinding) :
             checkbox.setImageResource(R.drawable.checkbox_checked)
         } else {
             checkbox.setImageResource(R.drawable.checkbox_unchecked_normal)
+        }
+
+        if (todoItem.isCompleted) {
+            checkbox.contentDescription = R.string.mark_not_completed.toString()
+        } else {
+            checkbox.contentDescription = R.string.mark_completed.toString()
         }
     }
 }

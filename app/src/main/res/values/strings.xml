@@ -6,9 +6,9 @@
     <string name="high_priority">Высокий приоритет</string>
     <string name="low_priority">Низкий приоритет</string>
     <string name="mark_completed">Пометить выполненным</string>
-    <string name="mark_not_completed">Пометить не выполненным</string>
+    <string name="mark_not_completed">Пометить невыполненным</string>
     <string name="show_completed">Показать завершённые</string>
-    <string name="hide_completed">Показать завершённые</string>
+    <string name="hide_completed">Скрыть завершённые</string>
     <string name="more_info">Больше информации</string>
     <string name="add_new_task">Добавить новую задачу</string>
     <string name="close">Закрыть</string>
@@ -21,4 +21,10 @@
     <string name="low">Низкий</string>
     <string name="high">Высокий</string>
     <string name="empty_task_message">Введите текст задачи</string>
+    <string name="no_connection">Нет соединения</string>
+    <string name="sync_successful">Синхронизация прошла успешно</string>
+    <string name="sync_failed">Синхронизация не удалась :(</string>
+    <string name="delete_failed">Не удалось удалить элемент на сервере</string>
+    <string name="update_failed">Не удалось обновить элемент на сервере</string>
+    <string name="add_failed">Не удалось добавить элемент на сервер</string>
 </resources>
