@@ -6,32 +6,31 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
-import com.ilyanvk.todoapp.data.TodoItem
 
 @Dao
 interface TodoItemDao {
 
     @Insert
-    suspend fun insert(todoItem: TodoItem)
+    suspend fun insert(todoItem: TodoItemEntity)
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun insertAll(list: List<TodoItem>)
+    suspend fun insertAll(list: List<TodoItemEntity>)
 
     @Update
-    suspend fun update(todoItem: TodoItem)
+    suspend fun update(todoItem: TodoItemEntity)
 
     @Delete
-    suspend fun delete(todoItem: TodoItem)
+    suspend fun delete(todoItem: TodoItemEntity)
 
-    @Query("DELETE FROM TodoItem")
+    @Query("DELETE FROM TodoItemEntity")
     suspend fun clear()
 
-    @Query("SELECT * FROM TodoItem ORDER BY deadline")
-    fun getAll(): List<TodoItem>
+    @Query("SELECT * FROM TodoItemEntity ORDER BY deadline")
+    fun getAll(): List<TodoItemEntity>
 
-    @Query("SELECT * FROM TodoItem WHERE isCompleted = 0  ORDER BY deadline")
-    fun getUncompleted(): List<TodoItem>
+    @Query("SELECT * FROM TodoItemEntity WHERE isCompleted = 0  ORDER BY deadline")
+    fun getUncompleted(): List<TodoItemEntity>
 
-    @Query("SELECT COUNT(*) FROM TodoItem WHERE isCompleted = 1")
+    @Query("SELECT COUNT(*) FROM TodoItemEntity WHERE isCompleted = 1")
     fun countCompleted(): Int
 }

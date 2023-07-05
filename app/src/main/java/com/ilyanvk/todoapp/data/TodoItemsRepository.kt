@@ -2,11 +2,12 @@ package com.ilyanvk.todoapp.data
 
 import com.ilyanvk.todoapp.R
 import com.ilyanvk.todoapp.data.database.TodoItemDao
+import com.ilyanvk.todoapp.data.database.TodoItemEntity
 import com.ilyanvk.todoapp.data.retrofit.Error
 import com.ilyanvk.todoapp.data.retrofit.TodoItemApi
-import com.ilyanvk.todoapp.data.retrofit.TodoItemApiRequest
-import com.ilyanvk.todoapp.data.retrofit.TodoItemApiRequestList
 import com.ilyanvk.todoapp.data.retrofit.TodoItemServer
+import com.ilyanvk.todoapp.data.retrofit.models.TodoItemApiRequest
+import com.ilyanvk.todoapp.data.retrofit.models.TodoItemApiRequestList
 import kotlinx.coroutines.delay
 
 object TodoItemsRepository {
@@ -30,8 +31,8 @@ object TodoItemsRepository {
 
     fun getAllTodoItems(): List<TodoItem> {
         return when (showCompleted) {
-            false -> dao.getUncompleted()
-            else -> dao.getAll()
+            false -> dao.getUncompleted().map { it.toTodoItem() }
+            else -> dao.getAll().map { it.toTodoItem() }
         }
     }
 
@@ -47,19 +48,19 @@ object TodoItemsRepository {
             deadline = todoItem.deadline,
             creationDate = todoItem.creationDate
         )
-        dao.insert(newTodoItem)
+        dao.insert(TodoItemEntity.fromTodoItem(newTodoItem))
         addTodoItemOnServer(newTodoItem)
         onRepositoryUpdate()
     }
 
     suspend fun updateTodoItem(todoItem: TodoItem) {
-        dao.update(todoItem)
+        dao.update(TodoItemEntity.fromTodoItem(todoItem))
         updateTodoItemOnServer(todoItem)
         onRepositoryUpdate()
     }
 
     suspend fun deleteTodoItem(todoItem: TodoItem) {
-        dao.delete(todoItem)
+        dao.delete(TodoItemEntity.fromTodoItem(todoItem))
         deleteTodoItemFromServer(todoItem)
         onRepositoryUpdate()
     }
@@ -138,8 +139,9 @@ object TodoItemsRepository {
             retryWithDelay(3) {
                 val response = api.getList()
                 if (response.isSuccessful) {
-                    val todoItems = response.body()?.list?.map { it.toTodoItem() } ?: listOf()
-                    dao.insertAll(todoItems)
+                    val todoItems =
+                        response.body()?.list?.map { it.toTodoItem() } ?: listOf<TodoItem>()
+                    dao.insertAll(todoItems.map { TodoItemEntity.fromTodoItem(it) })
                     response.body()?.let { sharedPreferences.revision = it.revision }
                 } else {
                     handleServerError(response.code())
@@ -160,7 +162,7 @@ object TodoItemsRepository {
                 val revision = sharedPreferences.revision
                 val requestList = TodoItemApiRequestList("ok", localItems.map {
                     TodoItemServer.fromTodoItem(
-                        it, sharedPreferences.deviceId ?: "null"
+                        it.toTodoItem(), sharedPreferences.deviceId ?: "null"
                     )
                 })
                 val response = api.updateTodoItemsList(revision, requestList)
@@ -170,7 +172,7 @@ object TodoItemsRepository {
                         val serverItems = responseData.list.map { it.toTodoItem() }
 
                         dao.clear()
-                        dao.insertAll(serverItems)
+                        dao.insertAll(serverItems.map { TodoItemEntity.fromTodoItem(it) })
 
                         sharedPreferences.revision = responseData.revision
                         onRepositoryUpdate()

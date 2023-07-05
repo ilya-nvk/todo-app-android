@@ -1,7 +1,5 @@
 package com.ilyanvk.todoapp.data.retrofit
 
-import com.ilyanvk.todoapp.data.Constants.AUTH_TOKEN
-import com.ilyanvk.todoapp.data.Constants.BASE_URL
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -35,5 +33,10 @@ class ApiClient {
 
     val api: TodoItemApi by lazy {
         retrofit.create(TodoItemApi::class.java)
+    }
+
+    companion object {
+        const val BASE_URL = "https://beta.mrdekk.ru/todobackend/"
+        const val AUTH_TOKEN = "outsparspinning"
     }
 }

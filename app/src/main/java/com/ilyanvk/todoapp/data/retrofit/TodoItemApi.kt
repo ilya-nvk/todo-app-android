@@ -1,6 +1,9 @@
 package com.ilyanvk.todoapp.data.retrofit
 
-import com.ilyanvk.todoapp.data.Constants.HEADER
+import com.ilyanvk.todoapp.data.retrofit.models.TodoItemApiRequest
+import com.ilyanvk.todoapp.data.retrofit.models.TodoItemApiRequestList
+import com.ilyanvk.todoapp.data.retrofit.models.TodoItemApiResponse
+import com.ilyanvk.todoapp.data.retrofit.models.TodoItemApiResponseList
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
@@ -37,4 +40,8 @@ interface TodoItemApi {
     suspend fun deleteTodoItem(
         @Header(HEADER) revision: Int, @Path("id") id: String
     ): Response<TodoItemApiResponse>
+
+    companion object {
+        const val HEADER = "X-Last-Known-Revision"
+    }
 }

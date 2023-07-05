@@ -19,7 +19,7 @@ import com.ilyanvk.todoapp.data.TodoItemsRepository
 import com.ilyanvk.todoapp.databinding.FragmentTodoListBinding
 import com.ilyanvk.todoapp.recyclerview.TodoItemAdapter
 
-class TodoList : Fragment() {
+class TodoListFragment : Fragment() {
     private val viewModel: TodoListViewModel by activityViewModels()
 
     private var _binding: FragmentTodoListBinding? = null

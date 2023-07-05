@@ -26,7 +26,7 @@ import java.text.DateFormat
 import java.util.Calendar
 
 
-class TodoEditor : Fragment() {
+class TodoEditorFragment : Fragment() {
     private val viewModel: TodoEditorViewModel by activityViewModels()
 
     private var _binding: FragmentTodoEditorBinding? = null

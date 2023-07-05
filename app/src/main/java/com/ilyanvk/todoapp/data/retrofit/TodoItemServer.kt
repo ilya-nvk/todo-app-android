@@ -47,24 +47,3 @@ data class TodoItemServer(
         )
     }
 }
-
-data class TodoItemApiRequestList(
-    @SerializedName("status") val status: String,
-    @SerializedName("list") val list: List<TodoItemServer>
-)
-
-data class TodoItemApiResponseList(
-    @SerializedName("status") val status: String,
-    @SerializedName("list") val list: List<TodoItemServer>,
-    @SerializedName("revision") val revision: Int
-)
-
-data class TodoItemApiRequest(
-    @SerializedName("element") val element: TodoItemServer
-)
-
-data class TodoItemApiResponse(
-    @SerializedName("status") val status: String,
-    @SerializedName("revision") val revision: Int,
-    @SerializedName("element") val element: TodoItemServer
-)

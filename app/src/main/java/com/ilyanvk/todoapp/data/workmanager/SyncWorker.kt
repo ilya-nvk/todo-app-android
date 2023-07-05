@@ -9,8 +9,9 @@ import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
 import com.ilyanvk.todoapp.data.TodoItemsRepository
-import com.ilyanvk.todoapp.data.retrofit.TodoItemApiRequestList
+import com.ilyanvk.todoapp.data.database.TodoItemEntity
 import com.ilyanvk.todoapp.data.retrofit.TodoItemServer
+import com.ilyanvk.todoapp.data.retrofit.models.TodoItemApiRequestList
 import java.util.concurrent.TimeUnit
 
 class SyncWorker(context: Context, workerParams: WorkerParameters) :
@@ -21,14 +22,15 @@ class SyncWorker(context: Context, workerParams: WorkerParameters) :
         val revision = TodoItemsRepository.sharedPreferences.revision
         val requestList = TodoItemApiRequestList("ok", localItems.map {
             TodoItemServer.fromTodoItem(
-                it, TodoItemsRepository.sharedPreferences.deviceId ?: "null"
+                it.toTodoItem(), TodoItemsRepository.sharedPreferences.deviceId ?: "null"
             )
         })
         val response = TodoItemsRepository.api.updateTodoItemsList(revision, requestList)
         if (response.isSuccessful) {
             val responseData = response.body()
             if (responseData != null) {
-                val serverItems = responseData.list.map { it.toTodoItem() }
+                val serverItems =
+                    responseData.list.map { TodoItemEntity.fromTodoItem(it.toTodoItem()) }
 
                 TodoItemsRepository.dao.clear()
                 TodoItemsRepository.dao.insertAll(serverItems)
