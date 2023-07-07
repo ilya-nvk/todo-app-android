@@ -21,14 +21,36 @@ import com.ilyanvk.todoapp.ui.recyclerview.TodoItemAdapter
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
+/**
+ * [Fragment] class for displaying and managing the list of [TodoItem] objects.
+ *
+ * The [TodoListFragment] class is responsible for the following functionality:
+ *
+ * Displaying the list of [TodoItem] objects in a RecyclerView.
+ *
+ * Handling user interactions, such as clicking on a [TodoItem] or
+ * toggling the visibility of completed [TodoItem] objects.
+ *
+ * Initiating data synchronization with the repository.
+ *
+ * Notifying the user of the network state and displaying appropriate messages.
+ *
+ * @property viewModel The [TodoListViewModel] instance for managing the state and business logic of the fragment.
+ * @property adapter The [TodoItemAdapter] instance for displaying the list of TodoItems in the RecyclerView.
+ * @property notifyErrorStateChange
+ * Flag indicating whether to notify the error state change when the network state changes.
+ */
 class TodoListFragment : Fragment() {
-    private val viewModel: TodoListViewModel by activityViewModels {
-        TodoListViewModel.Factory(
-            (requireActivity().application as Application).appComponent.injectTodoListViewModel()
-        )
-    }
     private var _binding: FragmentTodoListBinding? = null
     private val binding get() = _binding!!
+
+    private val component by lazy {
+        (requireActivity().application as Application).appComponent.addTodoListFragmentComponent()
+    }
+    private val viewModel: TodoListViewModel by activityViewModels {
+        TodoListViewModel.Factory(component.provideTodoListViewModelFactory())
+    }
+
     private val adapter = setupTodoItemsAdapter()
     private var notifyErrorStateChange = false
 

@@ -4,6 +4,10 @@ import com.google.gson.annotations.SerializedName
 import com.ilyanvk.todoapp.data.Priority
 import com.ilyanvk.todoapp.data.TodoItem
 
+/**
+ * This class is used to map the [TodoItem] object to the server format.
+ * It is also used to map the server response to the [TodoItem] object.
+ */
 data class TodoItemServer(
     @SerializedName("id") val id: String,
     @SerializedName("text") val text: String,

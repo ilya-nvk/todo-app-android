@@ -9,14 +9,24 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import javax.inject.Inject
 
+/**
+ * Implementation of the [TodoItemsRepository] interface that manages [TodoItem] objects.
+ *
+ * @param localDataSource The local data source for accessing [TodoItem] objects
+ * @param remoteDataSource The remote data source for accessing [TodoItem] objects
+ * @param sharedPreferencesDataSource The shared preferences data source
+ * for storing revision and synchronization information.
+ */
 class TodoItemsRepositoryImpl @Inject constructor(
     private val localDataSource: LocalDataSource,
     private val remoteDataSource: RemoteDataSource,
     private val sharedPreferencesDataSource: SharedPreferencesDataSource
 ) : TodoItemsRepository {
     private val _todoItemListFlow: MutableStateFlow<List<TodoItem>> = MutableStateFlow(emptyList())
+
     override val todoItemListFlow: StateFlow<List<TodoItem>>
         get() = _todoItemListFlow
+
     override val todoItemList: List<TodoItem>
         get() = _todoItemListFlow.value
 

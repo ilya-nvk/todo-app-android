@@ -8,9 +8,12 @@ import com.ilyanvk.todoapp.data.remotedatasource.retrofit.models.TodoItemServer
 import com.ilyanvk.todoapp.data.sharedpreferences.SharedPreferencesDataSource
 import javax.inject.Inject
 
+/**
+ * Implementation of the [RemoteDataSource] interface that interacts with the [TodoItemApi].
+ */
 class RemoteDataSourceImpl @Inject constructor(
-    val api: TodoItemApi,
-    val sharedPreferencesDataSource: SharedPreferencesDataSource
+    private val api: TodoItemApi,
+    private val sharedPreferencesDataSource: SharedPreferencesDataSource
 ) : RemoteDataSource {
     override suspend fun getTodoItemList(): List<TodoItem> {
         val response = api.getAll()

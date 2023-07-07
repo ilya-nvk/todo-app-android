@@ -15,6 +15,12 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
+/**
+ * [ViewModel] class responsible for managing the state and business logic of the [TodoListFragment].
+ *
+ * @property repository The TodoItemsRepository instance for accessing and managing TodoItems.
+ * @property sharedPreferences The SharedPreferencesDataSource instance for managing shared preferences.
+ */
 class TodoListViewModel @AssistedInject constructor(
     private val repository: TodoItemsRepository,
     private val sharedPreferences: SharedPreferencesDataSource

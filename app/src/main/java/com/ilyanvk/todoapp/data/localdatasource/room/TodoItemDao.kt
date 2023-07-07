@@ -6,6 +6,12 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 
+/**
+ * Data Access Object (DAO) interface for the [TodoItemEntity] entity.
+ *
+ * The TodoItemDao interface provides methods for performing CRUD (Create, Read, Update, Delete) operations
+ * on the [TodoItemEntity] table in the Room database
+ */
 @Dao
 interface TodoItemDao {
 

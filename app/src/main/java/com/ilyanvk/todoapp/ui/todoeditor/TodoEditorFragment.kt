@@ -18,20 +18,29 @@ import androidx.navigation.fragment.findNavController
 import com.ilyanvk.todoapp.Application
 import com.ilyanvk.todoapp.R
 import com.ilyanvk.todoapp.data.Priority
+import com.ilyanvk.todoapp.data.TodoItem
 import com.ilyanvk.todoapp.databinding.FragmentTodoEditorBinding
 import com.ilyanvk.todoapp.ui.BundleConstants.TODO_ITEM_TO_EDIT_TAG
 import java.text.DateFormat
 import java.util.Calendar
 
-
+/**
+ * [Fragment] for editing or creating a [TodoItem].
+ *
+ * The [TodoEditorFragment] allows the user to edit an existing [TodoItem] or create a new one.
+ * It provides controls for entering the task text, setting the deadline, and selecting the priority.
+ * The user can save the changes or delete the [TodoItem].
+ */
 class TodoEditorFragment : Fragment() {
-    private val viewModel: TodoEditorViewModel by activityViewModels {
-        TodoEditorViewModel.Factory(
-            (requireActivity().application as Application).appComponent.injectTodoEditorViewModel()
-        )
-    }
     private var _binding: FragmentTodoEditorBinding? = null
     private val binding get() = _binding!!
+
+    private val component by lazy {
+        (requireActivity().application as Application).appComponent.addTodoEditorFragmentComponent()
+    }
+    private val viewModel: TodoEditorViewModel by activityViewModels {
+        TodoEditorViewModel.Factory(component.provideTodoEditorViewModelFactory())
+    }
 
     private var text: String = ""
     private var deadline: Long? = null

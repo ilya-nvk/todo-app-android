@@ -1,12 +1,12 @@
 package com.ilyanvk.todoapp.di.modules
 
+import com.ilyanvk.todoapp.di.scopes.AppScope
 import dagger.Module
 import dagger.Provides
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import java.util.concurrent.TimeUnit
-import javax.inject.Singleton
 
 @Module
 class ClientModule {
@@ -20,7 +20,7 @@ class ClientModule {
         chain.proceed(request)
     }
 
-    @Singleton
+    @AppScope
     @Provides
     fun provideOkHttpClient(): OkHttpClient =
         OkHttpClient.Builder().connectTimeout(CONNECT_TIMEOUT, TimeUnit.SECONDS)

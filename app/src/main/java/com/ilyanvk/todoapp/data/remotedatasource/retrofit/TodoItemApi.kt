@@ -1,5 +1,6 @@
 package com.ilyanvk.todoapp.data.remotedatasource.retrofit
 
+import com.ilyanvk.todoapp.data.TodoItem
 import com.ilyanvk.todoapp.data.remotedatasource.retrofit.models.TodoItemApiRequest
 import com.ilyanvk.todoapp.data.remotedatasource.retrofit.models.TodoItemApiRequestList
 import com.ilyanvk.todoapp.data.remotedatasource.retrofit.models.TodoItemApiResponse
@@ -14,6 +15,12 @@ import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.Path
 
+/**
+ *Interface representing the TodoItem API.
+ *
+ * The TodoItemApi interface defines the API endpoints for performing CRUD (Create, Read, Update, Delete)
+ * operations on the [TodoItem] objects.
+ */
 interface TodoItemApi {
 
     @GET("list")

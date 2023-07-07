@@ -6,6 +6,10 @@ import com.ilyanvk.todoapp.data.Priority
 import com.ilyanvk.todoapp.data.TodoItem
 import java.util.UUID
 
+/**
+ * Represents a TodoItemEntity, which is an entity class used for storing and
+ * retrieving [TodoItem] data from a database.
+ */
 @Entity
 data class TodoItemEntity(
     @PrimaryKey

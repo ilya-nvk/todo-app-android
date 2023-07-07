@@ -3,6 +3,9 @@ package com.ilyanvk.todoapp.ui.recyclerview
 import androidx.recyclerview.widget.DiffUtil
 import com.ilyanvk.todoapp.data.TodoItem
 
+/**
+ * Implementation of the [DiffUtil.ItemCallback] for comparing TodoItem objects in a RecyclerView.
+ */
 class DiffUtilCallbackImpl : DiffUtil.ItemCallback<TodoItem>() {
     override fun areItemsTheSame(oldItem: TodoItem, newItem: TodoItem): Boolean =
         oldItem.id == newItem.id

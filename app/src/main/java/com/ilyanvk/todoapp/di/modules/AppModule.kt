@@ -3,19 +3,19 @@ package com.ilyanvk.todoapp.di.modules
 import android.content.Context
 import android.content.SharedPreferences
 import com.ilyanvk.todoapp.data.sharedpreferences.SharedPreferencesDataSource.Companion.NAME
+import com.ilyanvk.todoapp.di.scopes.AppScope
 import dagger.Module
 import dagger.Provides
-import javax.inject.Singleton
 
 @Module
 class AppModule(private val context: Context) {
-    @Singleton
+    @AppScope
     @Provides
     fun provideContext(): Context {
         return context
     }
 
-    @Singleton
+    @AppScope
     @Provides
     fun provideSharedPreferences(context: Context): SharedPreferences {
         return context.getSharedPreferences(NAME, Context.MODE_PRIVATE)

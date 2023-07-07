@@ -5,6 +5,14 @@ import com.ilyanvk.todoapp.data.sharedpreferences.SharedPreferencesDataSource.Co
 import java.util.UUID
 import javax.inject.Inject
 
+/**
+ * Implementation of the [SharedPreferencesDataSource] interface that manages data in shared preferences.
+ *
+ * The [SharedPreferencesDataSourceImpl] class provides the implementation for storing and retrieving data
+ * using the shared preferences mechanism in Android.
+ *
+ * @param context The application context.
+ */
 class SharedPreferencesDataSourceImpl @Inject constructor(context: Context) :
     SharedPreferencesDataSource {
     private val preferences = context.getSharedPreferences(NAME, Context.MODE_PRIVATE)

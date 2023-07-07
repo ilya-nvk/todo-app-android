@@ -5,8 +5,13 @@ import com.ilyanvk.todoapp.data.localdatasource.room.TodoItemDatabase
 import com.ilyanvk.todoapp.data.localdatasource.room.TodoItemEntity
 import javax.inject.Inject
 
+/**
+ * Implementation of the [LocalDataSource] interface.
+ *
+ * @param database the Room database.
+ */
 class LocalDataSourceImpl @Inject constructor(
-    val database: TodoItemDatabase
+    private val database: TodoItemDatabase
 ) : LocalDataSource {
     override suspend fun getTodoItemList(): List<TodoItem> {
         return database.dao.getAll().map { it.toTodoItem() }

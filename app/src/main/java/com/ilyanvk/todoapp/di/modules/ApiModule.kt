@@ -1,17 +1,17 @@
 package com.ilyanvk.todoapp.di.modules
 
 import com.ilyanvk.todoapp.data.remotedatasource.retrofit.TodoItemApi
+import com.ilyanvk.todoapp.di.scopes.AppScope
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import javax.inject.Singleton
 
 @Module
 class ApiModule {
 
-    @Singleton
+    @AppScope
     @Provides
     fun provideRetrofit(httpClient: OkHttpClient): Retrofit {
         return Retrofit.Builder().client(httpClient).baseUrl(BASE_URL)

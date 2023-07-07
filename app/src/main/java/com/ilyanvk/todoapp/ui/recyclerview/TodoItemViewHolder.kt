@@ -12,7 +12,14 @@ import com.ilyanvk.todoapp.data.TodoItem
 import com.ilyanvk.todoapp.databinding.TodoItemBinding
 import java.text.DateFormat
 
-
+/**
+ * ViewHolder class for displaying a single [TodoItem] in a [RecyclerView].
+ *
+ * The TodoItemViewHolder class extends [RecyclerView.ViewHolder] and holds references to the views
+ * for a single TodoItem in the item layout.
+ *
+ * @param binding The [TodoItemBinding] object that represents the item layout.
+ */
 class TodoItemViewHolder(private val binding: TodoItemBinding) :
     RecyclerView.ViewHolder(binding.root) {
     private val text: TextView = binding.textPreview

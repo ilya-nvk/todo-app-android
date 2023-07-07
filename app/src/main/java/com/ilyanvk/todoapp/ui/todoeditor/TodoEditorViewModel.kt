@@ -11,6 +11,14 @@ import dagger.assisted.AssistedInject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
+/**
+ * [ViewModel] class for the [TodoEditorFragment].
+ *
+ * The [TodoEditorViewModel] class is responsible for managing the state and logic related to
+ * editing or creating a [TodoItem].
+ *
+ * @param repository The [TodoItemsRepository] instance for accessing and modifying [TodoItem] data.
+ */
 class TodoEditorViewModel @AssistedInject constructor(
     private val repository: TodoItemsRepository
 ) :
