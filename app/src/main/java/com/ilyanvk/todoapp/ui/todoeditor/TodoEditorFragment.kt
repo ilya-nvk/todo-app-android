@@ -61,10 +61,10 @@ class TodoEditorFragment : Fragment() {
             deadline = toEdit.deadline
             priority = toEdit.priority
         }
-        setupDeadlineControl()
-        setupPriorityMenu()
-        setupDeleteButton()
-        setupSaveButton()
+        setUpDeadlineControl()
+        setUpPriorityMenu()
+        setUpDeleteButton()
+        setUpSaveButton()
         binding.closeEditorButton.setOnClickListener {
             findNavController().navigate(R.id.action_todoEditor_to_todoList)
         }
@@ -72,7 +72,7 @@ class TodoEditorFragment : Fragment() {
         return view
     }
 
-    private fun setupDeleteButton() {
+    private fun setUpDeleteButton() {
         if (viewModel.state is EditorState.Editing) {
             binding.deleteIcon.setImageResource(R.drawable.delete_red)
             binding.deleteText.setTextColor(
@@ -87,7 +87,7 @@ class TodoEditorFragment : Fragment() {
         }
     }
 
-    private fun setupSaveButton() {
+    private fun setUpSaveButton() {
         binding.saveTaskButton.setOnClickListener {
             val newText = binding.editText.text.toString().trim()
             if (newText.isBlank()) {
@@ -104,7 +104,7 @@ class TodoEditorFragment : Fragment() {
     }
 
 
-    private fun setupDeadlineControl() {
+    private fun setUpDeadlineControl() {
         val currentDate = Calendar.getInstance()
         val datePickerDialog = DatePickerDialog(
             requireContext(),
@@ -150,7 +150,7 @@ class TodoEditorFragment : Fragment() {
         }
     }
 
-    private fun setupPriorityMenu() {
+    private fun setUpPriorityMenu() {
         val popupMenu = PopupMenu(context, binding.priorityContainer)
         popupMenu.inflate(R.menu.priority_menu)
 

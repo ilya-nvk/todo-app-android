@@ -32,7 +32,7 @@ class TodoItemViewHolder(private val binding: TodoItemBinding) :
         onTaskClick: (todoItem: TodoItem, itemView: View) -> Unit,
         onCheckboxClick: (todoItem: TodoItem) -> Unit
     ) {
-        setupView(todoItem)
+        setUpView(todoItem)
         binding.root.setOnClickListener {
             onTaskClick(todoItem, binding.root)
         }
@@ -41,14 +41,14 @@ class TodoItemViewHolder(private val binding: TodoItemBinding) :
         }
     }
 
-    private fun setupView(todoItem: TodoItem) {
-        setupText(todoItem)
-        setupPriorityIcon(todoItem)
-        setupDeadlineText(todoItem)
-        setupCheckbox(todoItem)
+    private fun setUpView(todoItem: TodoItem) {
+        setUpText(todoItem)
+        setUpPriorityIcon(todoItem)
+        setUpDeadlineText(todoItem)
+        setUpCheckbox(todoItem)
     }
 
-    private fun setupCheckbox(todoItem: TodoItem) {
+    private fun setUpCheckbox(todoItem: TodoItem) {
         if (!todoItem.isCompleted && todoItem.priority == Priority.HIGH) {
             checkbox.setImageResource(R.drawable.checkbox_unchecked_high)
         } else if (todoItem.isCompleted) {
@@ -64,7 +64,7 @@ class TodoItemViewHolder(private val binding: TodoItemBinding) :
         }
     }
 
-    private fun setupDeadlineText(todoItem: TodoItem) {
+    private fun setUpDeadlineText(todoItem: TodoItem) {
         if (todoItem.deadline != null) {
             deadline.visibility = View.VISIBLE
             deadline.text =
@@ -74,7 +74,7 @@ class TodoItemViewHolder(private val binding: TodoItemBinding) :
         }
     }
 
-    private fun setupPriorityIcon(todoItem: TodoItem) {
+    private fun setUpPriorityIcon(todoItem: TodoItem) {
         when (todoItem.priority) {
             Priority.LOW -> {
                 priority.visibility = View.VISIBLE
@@ -95,7 +95,7 @@ class TodoItemViewHolder(private val binding: TodoItemBinding) :
         }
     }
 
-    private fun setupText(todoItem: TodoItem) {
+    private fun setUpText(todoItem: TodoItem) {
         text.text = todoItem.text
         val typedValue = TypedValue()
         val theme = text.context.theme

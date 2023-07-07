@@ -51,7 +51,7 @@ class TodoListFragment : Fragment() {
         TodoListViewModel.Factory(component.provideTodoListViewModelFactory())
     }
 
-    private val adapter = setupTodoItemsAdapter()
+    private val adapter = setUpTodoItemsAdapter()
     private var notifyErrorStateChange = false
 
     override fun onCreateView(
@@ -61,15 +61,15 @@ class TodoListFragment : Fragment() {
         val view = binding.root
         viewModel.todoItemList.observe(viewLifecycleOwner) { updateList(it) }
         viewModel.networkState.observe(viewLifecycleOwner) { onNetworkStateChange(it) }
-        setupRecyclerView()
-        setupSwipeRefresh()
-        setupVisibilityIcon()
-        setupFloatingActionButton()
+        setUpRecyclerView()
+        setUpSwipeRefresh()
+        setUpVisibilityIcon()
+        setUpFloatingActionButton()
 
         return view
     }
 
-    private fun setupSwipeRefresh() {
+    private fun setUpSwipeRefresh() {
         binding.swipeRefreshLayout.setOnRefreshListener {
             notifyErrorStateChange = true
             lifecycleScope.launch(Dispatchers.IO) {
@@ -99,7 +99,7 @@ class TodoListFragment : Fragment() {
         binding.swipeRefreshLayout.isRefreshing = false
     }
 
-    private fun setupVisibilityIcon() {
+    private fun setUpVisibilityIcon() {
         updateVisibilityIcon()
         binding.completedVisibility.setOnClickListener {
             viewModel.onCompletedVisibilityChange()
@@ -130,20 +130,20 @@ class TodoListFragment : Fragment() {
         viewModel.todoItemList.value?.let { updateList(it) }
     }
 
-    private fun setupFloatingActionButton() {
+    private fun setUpFloatingActionButton() {
         binding.newTodoFloatingActionButton.setOnClickListener {
             findNavController().navigate(R.id.action_todoList_to_todoEditor)
         }
     }
 
-    private fun setupRecyclerView() {
+    private fun setUpRecyclerView() {
         val todoItemsRecyclerView = binding.todoItems
         val layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
         todoItemsRecyclerView.adapter = adapter
         todoItemsRecyclerView.layoutManager = layoutManager
     }
 
-    private fun setupTodoItemsAdapter(): TodoItemAdapter {
+    private fun setUpTodoItemsAdapter(): TodoItemAdapter {
         return TodoItemAdapter(
             onTaskClick = { todoItem, itemView ->
                 val bundle = Bundle()
