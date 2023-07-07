@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="?back_primary"
-    tools:context=".todolist.TodoListFragment">
+    tools:context=".ui.todolist.TodoListFragment">
 
     <ImageView
         android:id="@+id/completed_visibility"
@@ -34,6 +34,7 @@
         android:layout_marginTop="6dp"
         android:text="@string/completed"
         android:textColor="?label_tertiary"
+        android:visibility="invisible"
         app:layout_constraintStart_toStartOf="@+id/title_text"
         app:layout_constraintTop_toBottomOf="@+id/title_text" />
 
