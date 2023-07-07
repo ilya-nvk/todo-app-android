@@ -53,6 +53,8 @@ class TodoListViewModel @AssistedInject constructor(
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
+            repository.syncFlowList()
+            repository.todoItemListFlow.collectLatest { _todoItemList.postValue(it) }
             syncData()
         }
     }

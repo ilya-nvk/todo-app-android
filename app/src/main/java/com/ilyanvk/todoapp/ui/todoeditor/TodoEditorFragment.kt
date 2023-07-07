@@ -20,7 +20,7 @@ import com.ilyanvk.todoapp.R
 import com.ilyanvk.todoapp.data.Priority
 import com.ilyanvk.todoapp.data.TodoItem
 import com.ilyanvk.todoapp.databinding.FragmentTodoEditorBinding
-import com.ilyanvk.todoapp.ui.BundleConstants.TODO_ITEM_TO_EDIT_TAG
+import com.ilyanvk.todoapp.ui.BundleConstants.TO_EDIT_ID
 import java.text.DateFormat
 import java.util.Calendar
 
@@ -53,7 +53,7 @@ class TodoEditorFragment : Fragment() {
         val view = binding.root
 
         viewModel.addTodoItemToEdit(
-            arguments?.getString(TODO_ITEM_TO_EDIT_TAG)
+            arguments?.getString(TO_EDIT_ID)
         )
         if (viewModel.state is EditorState.Editing) {
             val toEdit = (viewModel.state as EditorState.Editing).todoItem
@@ -61,6 +61,7 @@ class TodoEditorFragment : Fragment() {
             deadline = toEdit.deadline
             priority = toEdit.priority
         }
+
         setUpDeadlineControl()
         setUpPriorityMenu()
         setUpDeleteButton()
@@ -68,6 +69,7 @@ class TodoEditorFragment : Fragment() {
         binding.closeEditorButton.setOnClickListener {
             findNavController().navigate(R.id.action_todoEditor_to_todoList)
         }
+
         binding.editText.setText(text)
         return view
     }

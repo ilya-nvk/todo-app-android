@@ -16,7 +16,7 @@ import com.ilyanvk.todoapp.Application
 import com.ilyanvk.todoapp.R
 import com.ilyanvk.todoapp.data.TodoItem
 import com.ilyanvk.todoapp.databinding.FragmentTodoListBinding
-import com.ilyanvk.todoapp.ui.BundleConstants.TODO_ITEM_TO_EDIT_TAG
+import com.ilyanvk.todoapp.ui.BundleConstants.TO_EDIT_ID
 import com.ilyanvk.todoapp.ui.recyclerview.TodoItemAdapter
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -59,8 +59,10 @@ class TodoListFragment : Fragment() {
     ): View {
         _binding = FragmentTodoListBinding.inflate(inflater, container, false)
         val view = binding.root
+
         viewModel.todoItemList.observe(viewLifecycleOwner) { updateList(it) }
         viewModel.networkState.observe(viewLifecycleOwner) { onNetworkStateChange(it) }
+
         setUpRecyclerView()
         setUpSwipeRefresh()
         setUpVisibilityIcon()
@@ -114,9 +116,6 @@ class TodoListFragment : Fragment() {
         )
         binding.completed.text =
             getString(R.string.completed, todoItemList.count { it.isCompleted })
-        if (binding.completed.visibility == View.INVISIBLE) {
-            binding.completed.visibility = View.VISIBLE
-        }
     }
 
     private fun updateVisibilityIcon() {
@@ -147,7 +146,7 @@ class TodoListFragment : Fragment() {
         return TodoItemAdapter(
             onTaskClick = { todoItem, itemView ->
                 val bundle = Bundle()
-                bundle.putString(TODO_ITEM_TO_EDIT_TAG, todoItem.id)
+                bundle.putString(TO_EDIT_ID, todoItem.id)
                 Navigation.findNavController(itemView)
                     .navigate(R.id.action_todoList_to_todoEditor, bundle)
             },
