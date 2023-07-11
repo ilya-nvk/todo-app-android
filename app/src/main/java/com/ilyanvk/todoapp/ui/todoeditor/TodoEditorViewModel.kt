@@ -46,7 +46,7 @@ class TodoEditorViewModel @AssistedInject constructor(
     }
 
     fun addTodoItemToEdit(id: String?) {
-        val found = repository.todoItemList.find { it.id == id }
+        val found = repository.todoItemList.value?.find { it.id == id }
         if (found != null) {
             toEdit = found
             isEditing = true

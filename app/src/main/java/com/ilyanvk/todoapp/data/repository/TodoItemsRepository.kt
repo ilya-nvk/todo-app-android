@@ -1,7 +1,7 @@
 package com.ilyanvk.todoapp.data.repository
 
+import androidx.lifecycle.LiveData
 import com.ilyanvk.todoapp.data.TodoItem
-import kotlinx.coroutines.flow.StateFlow
 
 /**
  * Interface representing the repository for managing [TodoItem] objects.
@@ -10,13 +10,12 @@ import kotlinx.coroutines.flow.StateFlow
  * as well as synchronization operations with the data sources.
  */
 interface TodoItemsRepository {
-    val todoItemListFlow: StateFlow<List<TodoItem>>
-    val todoItemList: List<TodoItem>
+    val todoItemList: LiveData<List<TodoItem>>
     suspend fun addTodoItem(todoItem: TodoItem)
     suspend fun updateTodoItem(todoItem: TodoItem)
     suspend fun deleteTodoItemById(id: String)
     suspend fun getTodoItemById(id: String): TodoItem
 
-    suspend fun syncFlowList()
+    suspend fun syncList()
     suspend fun syncDataSources()
 }

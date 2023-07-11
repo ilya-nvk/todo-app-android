@@ -1,12 +1,12 @@
 package com.ilyanvk.todoapp.data.repository
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.ilyanvk.todoapp.data.TodoItem
 import com.ilyanvk.todoapp.data.TodoSyncFailed
 import com.ilyanvk.todoapp.data.localdatasource.LocalDataSource
 import com.ilyanvk.todoapp.data.remotedatasource.RemoteDataSource
 import com.ilyanvk.todoapp.data.sharedpreferences.SharedPreferencesDataSource
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import javax.inject.Inject
 
 /**
@@ -22,44 +22,41 @@ class TodoItemsRepositoryImpl @Inject constructor(
     private val remoteDataSource: RemoteDataSource,
     private val sharedPreferencesDataSource: SharedPreferencesDataSource
 ) : TodoItemsRepository {
-    private val _todoItemListFlow: MutableStateFlow<List<TodoItem>> = MutableStateFlow(emptyList())
 
-    override val todoItemListFlow: StateFlow<List<TodoItem>>
-        get() = _todoItemListFlow
-
-    override val todoItemList: List<TodoItem>
-        get() = _todoItemListFlow.value
+    private val _localTodoItemList: MutableLiveData<List<TodoItem>> =
+        MutableLiveData<List<TodoItem>>(
+            emptyList()
+        )
+    override val todoItemList: LiveData<List<TodoItem>>
+        get() = _localTodoItemList
 
     override suspend fun addTodoItem(todoItem: TodoItem) {
+        localDataSource.addTodoItem(todoItem)
+        _localTodoItemList.postValue(localDataSource.getTodoItemList())
         try {
             remoteDataSource.addTodoItem(sharedPreferencesDataSource.revision, todoItem)
         } catch (e: Exception) {
             sharedPreferencesDataSource.needSync = true
-        } finally {
-            localDataSource.addTodoItem(todoItem)
-            syncFlowList()
         }
     }
 
     override suspend fun updateTodoItem(todoItem: TodoItem) {
+        localDataSource.updateTodoItem(todoItem)
+        _localTodoItemList.postValue(localDataSource.getTodoItemList())
         try {
             remoteDataSource.updateTodoItem(todoItem)
         } catch (e: Exception) {
             sharedPreferencesDataSource.needSync = true
-        } finally {
-            localDataSource.updateTodoItem(todoItem)
-            syncFlowList()
         }
     }
 
     override suspend fun deleteTodoItemById(id: String) {
+        localDataSource.deleteTodoItemById(id)
+        _localTodoItemList.postValue(localDataSource.getTodoItemList())
         try {
             remoteDataSource.deleteTodoItemById(id)
         } catch (e: Exception) {
             sharedPreferencesDataSource.needSync = true
-        } finally {
-            localDataSource.deleteTodoItemById(id)
-            syncFlowList()
         }
     }
 
@@ -67,8 +64,8 @@ class TodoItemsRepositoryImpl @Inject constructor(
         return localDataSource.getTodoItemById(id)
     }
 
-    override suspend fun syncFlowList() {
-        _todoItemListFlow.emit(localDataSource.getTodoItemList())
+    override suspend fun syncList() {
+        _localTodoItemList.postValue(localDataSource.getTodoItemList())
     }
 
     override suspend fun syncDataSources() {
@@ -87,7 +84,7 @@ class TodoItemsRepositoryImpl @Inject constructor(
             sharedPreferencesDataSource.needSync = true
             throw TodoSyncFailed()
         } finally {
-            _todoItemListFlow.emit(localTodoItemList)
+            _localTodoItemList.postValue(localTodoItemList)
         }
     }
 }

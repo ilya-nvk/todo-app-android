@@ -18,6 +18,7 @@ class ApiModule {
             .addConverterFactory(GsonConverterFactory.create()).build()
     }
 
+    @AppScope
     @Provides
     fun provideApi(retrofitClient: Retrofit): TodoItemApi {
         return retrofitClient.create(TodoItemApi::class.java)

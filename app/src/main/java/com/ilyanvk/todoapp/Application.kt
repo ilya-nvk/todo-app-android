@@ -9,8 +9,6 @@ import androidx.work.NetworkType
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import com.ilyanvk.todoapp.data.workmanager.SyncWorker
-import com.ilyanvk.todoapp.data.workmanager.SyncWorkerConstants.REPEAT_INTERVAL
-import com.ilyanvk.todoapp.data.workmanager.SyncWorkerConstants.UNIQUE_WORK_NAME
 import com.ilyanvk.todoapp.data.workmanager.SyncWorkerFactory
 import com.ilyanvk.todoapp.di.components.AppComponent
 import com.ilyanvk.todoapp.di.components.DaggerAppComponent
@@ -47,5 +45,10 @@ class Application : Application(), Provider {
     override fun getWorkManagerConfiguration(): Configuration {
         return Configuration.Builder().setMinimumLoggingLevel(android.util.Log.INFO)
             .setWorkerFactory(workerFactory).build()
+    }
+
+    companion object Constants {
+        const val REPEAT_INTERVAL = 8L
+        const val UNIQUE_WORK_NAME = "dataSync"
     }
 }

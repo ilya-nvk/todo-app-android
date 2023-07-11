@@ -44,7 +44,10 @@ fun TodoEditorComposable(
                 TodoEditorDivider(PaddingValues(horizontal = 16.dp))
                 TodoEditorDeadlineField(deadline = deadline, onAction = onAction)
                 TodoEditorDivider(PaddingValues(top = 24.dp, bottom = 8.dp))
-                TodoEditorDeleteField(enabled = isEditing, onAction = onAction)
+                TodoEditorDeleteField(
+                    enabled = isEditing || todoItem.text.isNotEmpty(),
+                    onAction = onAction
+                )
             }
         }
     }
