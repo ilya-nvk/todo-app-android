@@ -62,14 +62,16 @@ fun TodoEditorDeadlineField(
             AnimatedVisibility(deadline != null) {
                 val dateText =
                     remember(deadline) {
-                        DateFormat.getDateInstance(DateFormat.DEFAULT).format(deadline)
+                        deadline?.let { DateFormat.getDateInstance(DateFormat.DEFAULT).format(it) }
                     }
-                Text(
-                    modifier = Modifier.clickable { openDialog = true },
-                    text = dateText,
-                    style = AppTheme.typography.subhead,
-                    color = AppTheme.colors.colorBlue
-                )
+                if (dateText != null) {
+                    Text(
+                        modifier = Modifier.clickable { openDialog = true },
+                        text = dateText,
+                        style = AppTheme.typography.subhead,
+                        color = AppTheme.colors.colorBlue
+                    )
+                }
             }
         }
         Switch(

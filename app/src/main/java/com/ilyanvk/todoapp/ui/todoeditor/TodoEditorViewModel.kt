@@ -1,5 +1,8 @@
 package com.ilyanvk.todoapp.ui.todoeditor
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -21,8 +24,13 @@ import kotlinx.coroutines.launch
  */
 class TodoEditorViewModel @AssistedInject constructor(
     private val repository: TodoItemsRepository
-) :
-    ViewModel() {
+) : ViewModel() {
+
+    var toEdit by mutableStateOf(TodoItem())
+        private set
+
+    var isEditing = false
+        private set
 
     @AssistedFactory
     interface TodoEditorViewModelFactory {
@@ -37,39 +45,53 @@ class TodoEditorViewModel @AssistedInject constructor(
         }
     }
 
-    var state: EditorState = EditorState.Creating
-        private set
-
     fun addTodoItemToEdit(id: String?) {
-        state =
-            if (id != null && repository.todoItemList.find { it.id == id } != null) EditorState.Editing(
-                repository.todoItemList.find { it.id == id }!!
-            )
-            else EditorState.Creating
+        val found = repository.todoItemList.find { it.id == id }
+        if (found != null) {
+            toEdit = found
+            isEditing = true
+        } else {
+            toEdit = TodoItem()
+            isEditing = false
+        }
     }
 
-    fun saveTodo(text: String, deadline: Long?, priority: Priority) {
+    fun saveTodoItem() {
         viewModelScope.launch(Dispatchers.IO) {
-            if (state is EditorState.Creating) {
-                val newTodoItem = TodoItem(text = text, priority = priority, deadline = deadline)
-                repository.addTodoItem(newTodoItem)
-            } else {
-                val newTodoItem = (state as EditorState.Editing).todoItem.copy(
-                    text = text,
-                    priority = priority,
-                    deadline = deadline,
-                    modificationDate = System.currentTimeMillis()
+            if (!isEditing) {
+                repository.addTodoItem(
+                    toEdit.copy(
+                        creationDate = System.currentTimeMillis(),
+                        modificationDate = System.currentTimeMillis()
+                    )
                 )
-                repository.updateTodoItem(newTodoItem)
+            } else {
+                repository.updateTodoItem(
+                    toEdit.copy(
+                        modificationDate = System.currentTimeMillis()
+                    )
+                )
             }
         }
     }
 
     fun deleteTodoItem() {
         viewModelScope.launch(Dispatchers.IO) {
-            if (state is EditorState.Editing) {
-                repository.deleteTodoItemById((state as EditorState.Editing).todoItem.id)
+            if (isEditing) {
+                repository.deleteTodoItemById(toEdit.id)
             }
         }
+    }
+
+    fun updateText(text: String) {
+        toEdit = toEdit.copy(text = text)
+    }
+
+    fun updatePriority(priority: Priority) {
+        toEdit = toEdit.copy(priority = priority)
+    }
+
+    fun updateDeadline(deadline: Long?) {
+        toEdit = toEdit.copy(deadline = deadline)
     }
 }

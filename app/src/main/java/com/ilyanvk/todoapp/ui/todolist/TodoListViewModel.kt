@@ -24,8 +24,18 @@ import kotlinx.coroutines.launch
 class TodoListViewModel @AssistedInject constructor(
     private val repository: TodoItemsRepository,
     private val sharedPreferences: SharedPreferencesDataSource
-) :
-    ViewModel() {
+) : ViewModel() {
+
+    private val _networkState = MutableLiveData<NetworkState>()
+    val networkState: LiveData<NetworkState>
+        get() = _networkState
+
+    private val _todoItemList = MutableLiveData<List<TodoItem>>()
+    val todoItemList: LiveData<List<TodoItem>>
+        get() = _todoItemList
+
+    val showCompleted
+        get() = sharedPreferences.showCompletedTodoItems
 
     @AssistedFactory
     interface TodoListViewModelFactory {
@@ -39,17 +49,6 @@ class TodoListViewModel @AssistedInject constructor(
             return factory.create() as T
         }
     }
-
-    private val _networkState = MutableLiveData<NetworkState>()
-    val networkState: LiveData<NetworkState>
-        get() = _networkState
-
-    private val _todoItemList = MutableLiveData<List<TodoItem>>()
-    val todoItemList: LiveData<List<TodoItem>>
-        get() = _todoItemList
-
-    val showCompleted
-        get() = sharedPreferences.showCompletedTodoItems
 
     init {
         viewModelScope.launch(Dispatchers.IO) {

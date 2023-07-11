@@ -21,12 +21,13 @@ import com.ilyanvk.todoapp.ui.todoeditor.components.TodoEditorToolbar
 
 @Composable
 fun TodoEditorComposable(
-    mode: EditorState,
+    todoItem: TodoItem,
+    isEditing: Boolean,
     onAction: (TodoEditorAction) -> Unit
 ) {
-    val text = if (mode is EditorState.Editing) mode.todoItem.text else ""
-    val priority = if (mode is EditorState.Editing) mode.todoItem.priority else Priority.MEDIUM
-    val deadline = if (mode is EditorState.Editing) mode.todoItem.deadline else null
+    val text = todoItem.text
+    val priority = todoItem.priority
+    val deadline = todoItem.deadline
 
     Scaffold(
         topBar = { TodoEditorToolbar(text = text, onAction = onAction) },
@@ -43,7 +44,7 @@ fun TodoEditorComposable(
                 TodoEditorDivider(PaddingValues(horizontal = 16.dp))
                 TodoEditorDeadlineField(deadline = deadline, onAction = onAction)
                 TodoEditorDivider(PaddingValues(top = 24.dp, bottom = 8.dp))
-                TodoEditorDeleteField(enabled = mode is EditorState.Editing, onAction = onAction)
+                TodoEditorDeleteField(enabled = isEditing, onAction = onAction)
             }
         }
     }
@@ -54,7 +55,8 @@ fun TodoEditorComposable(
 fun LightPreviewTodoEditor() {
     AppTheme(darkTheme = false) {
         TodoEditorComposable(
-            mode = editorState,
+            previewTodoItem,
+            isEditing = true,
             onAction = {})
     }
 }
@@ -64,7 +66,8 @@ fun LightPreviewTodoEditor() {
 fun DarkPreviewTodoEditor() {
     AppTheme(darkTheme = true) {
         TodoEditorComposable(
-            mode = editorState,
+            previewTodoItem,
+            isEditing = true,
             onAction = {})
     }
 }
@@ -74,5 +77,3 @@ val previewTodoItem = TodoItem(
     priority = Priority.HIGH,
     deadline = System.currentTimeMillis()
 )
-
-val editorState = EditorState.Editing(previewTodoItem)
