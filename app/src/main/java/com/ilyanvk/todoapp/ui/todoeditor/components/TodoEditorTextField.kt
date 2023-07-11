@@ -33,7 +33,7 @@ fun TodoEditorTextField(
             .padding(bottom = 12.dp)
             .padding(horizontal = 16.dp),
         value = text,
-        onValueChange = { onAction(TodoEditorAction.ChangeText) },
+        onValueChange = { onAction(TodoEditorAction.UpdateText(it)) },
         textStyle = AppTheme.typography.body.copy(
             color = AppTheme.colors.labelPrimary
         ),

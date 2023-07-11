@@ -30,7 +30,7 @@ fun TodoEditorToolbar(
     TopAppBar(
         navigationIcon = {
             IconButton(
-                onClick = { onAction(TodoEditorAction.CloseEditor) },
+                onClick = { onAction(TodoEditorAction.Close) },
                 enabled = true,
                 colors = IconButtonDefaults.iconButtonColors(
                     contentColor = AppTheme.colors.labelPrimary
