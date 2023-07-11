@@ -24,7 +24,5 @@
     <string name="no_connection">Нет соединения</string>
     <string name="sync_successful">Синхронизация прошла успешно</string>
     <string name="sync_failed">Синхронизация не удалась :(</string>
-    <string name="delete_failed">Не удалось удалить элемент на сервере</string>
-    <string name="update_failed">Не удалось обновить элемент на сервере</string>
-    <string name="add_failed">Не удалось добавить элемент на сервер</string>
+    <string name="remote_data_update_failed">Не удалось обновить данные на сервере</string>
 </resources>

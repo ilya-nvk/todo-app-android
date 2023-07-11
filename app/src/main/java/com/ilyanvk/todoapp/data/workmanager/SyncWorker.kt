@@ -1,64 +1,34 @@
 package com.ilyanvk.todoapp.data.workmanager
 
 import android.content.Context
-import androidx.work.Constraints
 import androidx.work.CoroutineWorker
-import androidx.work.ExistingPeriodicWorkPolicy
-import androidx.work.NetworkType
-import androidx.work.PeriodicWorkRequestBuilder
-import androidx.work.WorkManager
 import androidx.work.WorkerParameters
-import com.ilyanvk.todoapp.data.TodoItemsRepository
-import com.ilyanvk.todoapp.data.retrofit.TodoItemApiRequestList
-import com.ilyanvk.todoapp.data.retrofit.TodoItemServer
-import java.util.concurrent.TimeUnit
+import com.ilyanvk.todoapp.data.TodoSyncFailed
+import com.ilyanvk.todoapp.data.repository.TodoItemsRepository
 
-class SyncWorker(context: Context, workerParams: WorkerParameters) :
-    CoroutineWorker(context, workerParams) {
-
+/**
+ * Worker class for performing synchronization of data sources in the background.
+ *
+ * The [SyncWorker] class extends the [CoroutineWorker] class and performs the synchronization
+ * of data sources by invoking the syncDataSources() method on the TodoItemsRepository.
+ *
+ * @param context The application context.
+ *
+ * @param params The parameters for the worker.
+ *
+ * @param repository The [TodoItemsRepository] instance.
+ */
+class SyncWorker(
+    context: Context,
+    params: WorkerParameters,
+    private val repository: TodoItemsRepository
+) : CoroutineWorker(context, params) {
     override suspend fun doWork(): Result {
-        val localItems = TodoItemsRepository.dao.getAll()
-        val revision = TodoItemsRepository.sharedPreferences.revision
-        val requestList = TodoItemApiRequestList("ok", localItems.map {
-            TodoItemServer.fromTodoItem(
-                it, TodoItemsRepository.sharedPreferences.deviceId ?: "null"
-            )
-        })
-        val response = TodoItemsRepository.api.updateTodoItemsList(revision, requestList)
-        if (response.isSuccessful) {
-            val responseData = response.body()
-            if (responseData != null) {
-                val serverItems = responseData.list.map { it.toTodoItem() }
-
-                TodoItemsRepository.dao.clear()
-                TodoItemsRepository.dao.insertAll(serverItems)
-
-                TodoItemsRepository.sharedPreferences.revision = responseData.revision
-                TodoItemsRepository.onRepositoryUpdate()
-            } else {
-                return Result.retry()
-            }
-        } else {
-            return Result.retry()
-        }
-        return Result.success()
-    }
-
-
-    companion object {
-        private const val WORK_NAME = "SyncWorker"
-
-        fun enqueuePeriodicSync(context: Context) {
-            val constraints =
-                Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build()
-
-            val periodicRequest = PeriodicWorkRequestBuilder<SyncWorker>(
-                8, TimeUnit.HOURS
-            ).setConstraints(constraints).build()
-
-            WorkManager.getInstance(context).enqueueUniquePeriodicWork(
-                WORK_NAME, ExistingPeriodicWorkPolicy.KEEP, periodicRequest
-            )
+        return try {
+            repository.syncDataSources()
+            Result.success()
+        } catch (e: TodoSyncFailed) {
+            Result.retry()
         }
     }
 }

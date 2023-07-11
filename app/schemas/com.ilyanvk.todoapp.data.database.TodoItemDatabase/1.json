@@ -2,10 +2,10 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "c74559277af0b7caf9f4358404238336",
+    "identityHash": "c7b4e1fa5db8a89533004b68eab19ff0",
     "entities": [
       {
-        "tableName": "TodoItem",
+        "tableName": "TodoItemEntity",
         "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `text` TEXT NOT NULL, `priority` TEXT NOT NULL, `deadline` INTEGER, `isCompleted` INTEGER NOT NULL, `creationDate` INTEGER NOT NULL, `modificationDate` INTEGER NOT NULL, PRIMARY KEY(`id`))",
         "fields": [
           {
@@ -64,7 +64,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'c74559277af0b7caf9f4358404238336')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'c7b4e1fa5db8a89533004b68eab19ff0')"
     ]
   }
 }

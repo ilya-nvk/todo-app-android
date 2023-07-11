@@ -1,12 +1,11 @@
 package com.ilyanvk.todoapp.data
 
-import androidx.room.Entity
-import androidx.room.PrimaryKey
 import java.util.UUID
 
-@Entity
+/**
+ * Represents a task.
+ */
 data class TodoItem(
-    @PrimaryKey
     val id: String = UUID.randomUUID().toString(),
     val text: String,
     val priority: Priority = Priority.MEDIUM,
