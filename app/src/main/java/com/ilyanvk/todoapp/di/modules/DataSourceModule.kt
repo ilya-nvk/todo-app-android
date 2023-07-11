@@ -14,7 +14,7 @@ import dagger.Module
 interface DataSourceModule {
     @AppScope
     @Binds
-    fun bindRemoteDataSource(todoRemoteDataSourceImpl: RemoteDataSourceImpl): RemoteDataSource
+    fun bindRemoteDataSource(remoteDataSourceImpl: RemoteDataSourceImpl): RemoteDataSource
 
     @AppScope
     @Binds
