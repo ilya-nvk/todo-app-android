@@ -23,7 +23,7 @@ import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TodoEditorToolbar(
+fun TodoEditorTopBar(
     text: String,
     onAction: (TodoEditorAction) -> Unit
 ) {
@@ -71,7 +71,7 @@ fun TodoEditorToolbar(
 @Composable
 fun PreviewTodoEditorToolbar() {
     AppTheme {
-        TodoEditorToolbar(
+        TodoEditorTopBar(
             text = "jkddk",
             onAction = {}
         )

@@ -27,4 +27,10 @@
     <string name="remote_data_update_failed">Не удалось обновить данные на сервере</string>
     <string name="ok">Ок</string>
     <string name="cancel">Отмена</string>
+    <string name="go_back">Назад</string>
+    <string name="default_theme">По умолчанию</string>
+    <string name="light_theme">Светлая</string>
+    <string name="dark_theme">Тёмная</string>
+    <string name="current_theme">Текущая тема</string>
+
 </resources>

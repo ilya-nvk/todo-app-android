@@ -1,19 +1,24 @@
+@file:OptIn(ExperimentalMaterial3Api::class)
+
 package com.ilyanvk.todoapp.ui.todoeditor.components
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.MenuDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -21,25 +26,40 @@ import com.ilyanvk.todoapp.R
 import com.ilyanvk.todoapp.data.Priority
 import com.ilyanvk.todoapp.ui.theme.AppTheme
 import com.ilyanvk.todoapp.ui.todoeditor.TodoEditorAction
+import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TodoEditorPriorityField(
     priority: Priority,
     onAction: (TodoEditorAction) -> Unit
 ) {
-    var menuExpanded by remember { mutableStateOf(false) }
+    var showBottomSheet by remember { mutableStateOf(false) }
+    val bottomSheetState = rememberModalBottomSheetState()
+    val scope = rememberCoroutineScope()
+
+    if (showBottomSheet) {
+        PriorityBottomSheet(
+            hide = {
+                scope.launch {
+                    bottomSheetState.hide()
+                    showBottomSheet = false
+                }
+            },
+            onAction = onAction
+        )
+    }
 
     Column(
         modifier = Modifier
             .padding(16.dp)
-            .clickable { menuExpanded = true }
+            .clickable {
+                scope.launch {
+                    showBottomSheet = true
+                    bottomSheetState.show()
+                }
+            }
     ) {
-        PriorityDropdownMenu(
-            expanded = menuExpanded,
-            closeMenu = { menuExpanded = false },
-            onAction = onAction
-        )
-
         Text(
             text = stringResource(id = R.string.priority),
             style = AppTheme.typography.body,
@@ -59,63 +79,53 @@ fun TodoEditorPriorityField(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PriorityDropdownMenu(
-    expanded: Boolean,
-    closeMenu: () -> Unit,
+fun PriorityBottomSheet(
+    hide: () -> Unit,
     onAction: (TodoEditorAction) -> Unit
 ) {
-    DropdownMenu(
-        expanded = expanded,
-        onDismissRequest = closeMenu,
-        modifier = Modifier.background(
-            color = AppTheme.colors.backElevated
-        )
+    ModalBottomSheet(
+        onDismissRequest = { hide() },
+        containerColor = AppTheme.colors.backSecondary
     ) {
-        DropdownMenuItem(
-            text = {
-                Text(
-                    text = stringResource(R.string.no),
-                    style = AppTheme.typography.body,
-                    color = AppTheme.colors.labelPrimary
-                )
-            },
-            onClick = {
+        Column(Modifier.padding(bottom = 16.dp)) {
+            PriorityItem(
+                text = stringResource(R.string.no),
+                color = AppTheme.colors.labelPrimary
+            ) {
                 onAction(TodoEditorAction.UpdatePriority(Priority.MEDIUM))
-                closeMenu()
-            })
+                hide()
+            }
 
-        DropdownMenuItem(
-            text = {
-                Text(
-                    text = stringResource(R.string.low),
-                    style = AppTheme.typography.body
-                )
-            },
-            onClick = {
+            PriorityItem(
+                text = stringResource(R.string.low),
+                color = AppTheme.colors.labelPrimary
+            ) {
                 onAction(TodoEditorAction.UpdatePriority(Priority.LOW))
-                closeMenu()
-            },
-            colors = MenuDefaults.itemColors(
-                textColor = AppTheme.colors.labelPrimary
-            )
-        )
+                hide()
+            }
 
-        DropdownMenuItem(
-            text = {
-                Text(
-                    text = "!! " + stringResource(R.string.high),
-                    style = AppTheme.typography.body,
-                )
-            },
-            onClick = {
+            PriorityItem(
+                text = stringResource(R.string.high),
+                color = AppTheme.colors.colorRed
+            ) {
                 onAction(TodoEditorAction.UpdatePriority(Priority.HIGH))
-                closeMenu()
-            },
-            colors = MenuDefaults.itemColors(
-                textColor = AppTheme.colors.colorRed
-            )
-        )
+                hide()
+            }
+        }
+    }
+}
+
+@Composable
+fun PriorityItem(text: String, color: Color, onClick: () -> Unit) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { onClick() }
+            .padding(16.dp)
+    ) {
+        Text(text = text, style = AppTheme.typography.body, color = color)
     }
 }
 

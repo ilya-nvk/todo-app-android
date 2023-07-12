@@ -17,10 +17,10 @@ import com.ilyanvk.todoapp.ui.todoeditor.components.TodoEditorDeleteField
 import com.ilyanvk.todoapp.ui.todoeditor.components.TodoEditorDivider
 import com.ilyanvk.todoapp.ui.todoeditor.components.TodoEditorPriorityField
 import com.ilyanvk.todoapp.ui.todoeditor.components.TodoEditorTextField
-import com.ilyanvk.todoapp.ui.todoeditor.components.TodoEditorToolbar
+import com.ilyanvk.todoapp.ui.todoeditor.components.TodoEditorTopBar
 
 @Composable
-fun TodoEditorComposable(
+fun TodoEditorScreen(
     todoItem: TodoItem,
     isEditing: Boolean,
     onAction: (TodoEditorAction) -> Unit
@@ -30,7 +30,7 @@ fun TodoEditorComposable(
     val deadline = todoItem.deadline
 
     Scaffold(
-        topBar = { TodoEditorToolbar(text = text, onAction = onAction) },
+        topBar = { TodoEditorTopBar(text = text, onAction = onAction) },
         containerColor = AppTheme.colors.backPrimary
     ) { paddingValues ->
         LazyColumn(
@@ -57,7 +57,7 @@ fun TodoEditorComposable(
 @Composable
 fun LightPreviewTodoEditor() {
     AppTheme(darkTheme = false) {
-        TodoEditorComposable(
+        TodoEditorScreen(
             previewTodoItem,
             isEditing = true,
             onAction = {})
@@ -68,7 +68,7 @@ fun LightPreviewTodoEditor() {
 @Composable
 fun DarkPreviewTodoEditor() {
     AppTheme(darkTheme = true) {
-        TodoEditorComposable(
+        TodoEditorScreen(
             previewTodoItem,
             isEditing = true,
             onAction = {})

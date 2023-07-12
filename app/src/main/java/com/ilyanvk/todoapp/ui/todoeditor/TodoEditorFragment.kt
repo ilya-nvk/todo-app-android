@@ -40,7 +40,7 @@ class TodoEditorFragment : Fragment() {
         view.apply {
             setContent {
                 AppTheme {
-                    TodoEditorComposable(
+                    TodoEditorScreen(
                         todoItem = viewModel.toEdit,
                         isEditing = viewModel.isEditing,
                         onAction = ::onTodoEditorAction

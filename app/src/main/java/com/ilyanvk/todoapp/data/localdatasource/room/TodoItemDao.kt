@@ -15,7 +15,7 @@ import androidx.room.Update
 @Dao
 interface TodoItemDao {
 
-    @Query("SELECT * FROM TodoItemEntity ORDER BY deadline")
+    @Query("SELECT * FROM TodoItemEntity")
     fun getAll(): List<TodoItemEntity>
 
     @Query("SELECT * FROM TodoItemEntity WHERE id = :id")
