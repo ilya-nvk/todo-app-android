@@ -2,6 +2,7 @@ package com.ilyanvk.todoapp.data.sharedpreferences
 
 import android.content.Context
 import com.ilyanvk.todoapp.data.sharedpreferences.SharedPreferencesDataSource.Companion.NAME
+import com.ilyanvk.todoapp.ui.settings.ThemeMode
 import java.util.UUID
 import javax.inject.Inject
 
@@ -41,6 +42,14 @@ class SharedPreferencesDataSourceImpl @Inject constructor(context: Context) :
             editor.putBoolean(SHOW_COMPLETED_TAG, value)
             editor.apply()
         }
+    override var theme: ThemeMode
+        get() = ThemeMode.values().find {
+            it.ordinal == preferences.getInt(THEME_TAG, ThemeMode.DEFAULT.ordinal)
+        } ?: ThemeMode.DEFAULT
+        set(value) {
+            editor.putInt(THEME_TAG, value.ordinal)
+            editor.apply()
+        }
 
     private fun generateDeviceId() {
         if (deviceId == null) {
@@ -71,5 +80,6 @@ class SharedPreferencesDataSourceImpl @Inject constructor(context: Context) :
         private const val DEVICE_TAG = "currentDevice"
         private const val SYNC_FLAG_TAG = "syncFlag"
         private const val SHOW_COMPLETED_TAG = "showCompleted"
+        private const val THEME_TAG = "theme"
     }
 }

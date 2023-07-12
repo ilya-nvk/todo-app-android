@@ -67,6 +67,9 @@ class TodoListFragment : Fragment() {
         setUpSwipeRefresh()
         setUpVisibilityIcon()
         setUpFloatingActionButton()
+        binding.settingsIcon.setOnClickListener {
+            findNavController().navigate(R.id.action_todoList_to_settingsFragment)
+        }
 
         return view
     }

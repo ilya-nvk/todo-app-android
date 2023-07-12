@@ -21,4 +21,5 @@ interface AppComponent {
     fun injectMainActivity(activity: MainActivity)
     fun addTodoListFragmentComponent(): TodoListFragmentComponent
     fun addTodoEditorFragmentComponent(): TodoEditorFragmentComponent
+    fun addSettingsFragmentComponent(): SettingsFragmentComponent
 }

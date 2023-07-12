@@ -32,5 +32,5 @@
     <string name="light_theme">Светлая</string>
     <string name="dark_theme">Тёмная</string>
     <string name="current_theme">Текущая тема</string>
-
+    <string name="settings">Настройки</string>
 </resources>

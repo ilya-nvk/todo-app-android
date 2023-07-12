@@ -22,5 +22,19 @@
             android:id="@+id/action_todoList_to_todoEditor"
             app:destination="@id/todoEditor"
             app:popUpTo="@id/todoList" />
+        <action
+            android:id="@+id/action_todoList_to_settingsFragment"
+            app:destination="@id/settingsFragment"
+            app:popUpTo="@id/todoList" />
+    </fragment>
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.ilyanvk.todoapp.ui.settings.SettingsFragment"
+        android:label="SettingsFragment" >
+        <action
+            android:id="@+id/action_settingsFragment_to_todoList"
+            app:destination="@id/todoList"
+            app:popUpTo="@id/todoList"
+            app:popUpToInclusive="true" />
     </fragment>
 </navigation>

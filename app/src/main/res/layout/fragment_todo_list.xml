@@ -11,11 +11,11 @@
         android:id="@+id/completed_visibility"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="24dp"
+        android:layout_marginEnd="8dp"
         android:contentDescription="@string/hide_completed"
         android:src="@drawable/visibility"
         app:layout_constraintBottom_toBottomOf="@+id/completed"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/settings_icon"
         app:layout_constraintTop_toTopOf="@+id/completed" />
 
     <TextView
@@ -76,5 +76,18 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:shapeAppearanceOverlay="@style/FabShapeStyle" />
+
+    <ImageView
+        android:id="@+id/settings_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="24dp"
+        android:contentDescription="@string/settings"
+        android:src="@drawable/settings_icon"
+        app:layout_constraintBottom_toBottomOf="@+id/completed_visibility"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/completed_visibility"
+        app:layout_constraintVertical_bias="0.276"
+        app:tint="?label_tertiary" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
