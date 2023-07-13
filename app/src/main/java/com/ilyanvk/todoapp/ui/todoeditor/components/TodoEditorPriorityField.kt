@@ -2,6 +2,9 @@
 
 package com.ilyanvk.todoapp.ui.todoeditor.components
 
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -52,14 +55,23 @@ fun TodoEditorPriorityField(
 
     Column(
         modifier = Modifier
-            .padding(16.dp)
+            .fillMaxWidth()
             .clickable {
                 scope.launch {
                     showBottomSheet = true
                     bottomSheetState.show()
                 }
             }
+            .padding(16.dp)
     ) {
+        val color by animateColorAsState(
+            targetValue = when (priority) {
+                Priority.HIGH -> AppTheme.colors.colorRed
+                else -> AppTheme.colors.labelSecondary
+            },
+            animationSpec = tween(200, easing = LinearEasing),
+            label = "color"
+        )
         Text(
             text = stringResource(id = R.string.priority),
             style = AppTheme.typography.body,
@@ -74,7 +86,7 @@ fun TodoEditorPriorityField(
                 }
             ),
             style = AppTheme.typography.subhead,
-            color = AppTheme.colors.labelSecondary
+            color = color
         )
     }
 }
@@ -89,7 +101,7 @@ fun PriorityBottomSheet(
         onDismissRequest = { hide() },
         containerColor = AppTheme.colors.backSecondary
     ) {
-        Column(Modifier.padding(bottom = 16.dp)) {
+        Column(Modifier.padding(bottom = 48.dp)) {
             PriorityItem(
                 text = stringResource(R.string.no),
                 color = AppTheme.colors.labelPrimary
