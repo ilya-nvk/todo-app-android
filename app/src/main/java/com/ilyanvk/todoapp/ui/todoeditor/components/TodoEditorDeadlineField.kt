@@ -9,12 +9,14 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Switch
-import androidx.compose.material3.DatePickerDefaults
+import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.TimePicker
 import androidx.compose.material3.rememberDatePickerState
+import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -27,9 +29,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.ilyanvk.todoapp.R
+import com.ilyanvk.todoapp.ui.StringConverter.DAY
+import com.ilyanvk.todoapp.ui.StringConverter.HOUR
+import com.ilyanvk.todoapp.ui.StringConverter.MINUTE
+import com.ilyanvk.todoapp.ui.StringConverter.toDateTimeString
 import com.ilyanvk.todoapp.ui.theme.AppTheme
 import com.ilyanvk.todoapp.ui.todoeditor.TodoEditorAction
-import java.text.DateFormat
 
 @Composable
 fun TodoEditorDeadlineField(
@@ -44,12 +49,24 @@ fun TodoEditorDeadlineField(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        var openDialog by remember { mutableStateOf(false) }
+        var currentDeadline by remember { mutableStateOf(deadline) }
+        var showDatePickerDialog by remember { mutableStateOf(false) }
+        var showTimePickerDialog by remember { mutableStateOf(false) }
 
-        DatePicker(
+        DeadlineDatePicker(
             date = deadline,
-            open = openDialog,
-            onDialogClose = { openDialog = false },
+            show = showDatePickerDialog,
+            showTimePicker = {
+                currentDeadline = it
+                showTimePickerDialog = true
+            },
+            onDialogClose = { showDatePickerDialog = false }
+        )
+
+        DeadlineTimePicker(
+            date = currentDeadline ?: 0,
+            open = showTimePickerDialog,
+            onDialogClose = { showTimePickerDialog = false },
             onAction = onAction
         )
 
@@ -62,11 +79,11 @@ fun TodoEditorDeadlineField(
             AnimatedVisibility(deadline != null) {
                 val dateText =
                     remember(deadline) {
-                        deadline?.let { DateFormat.getDateInstance(DateFormat.DEFAULT).format(it) }
+                        deadline?.toDateTimeString()
                     }
                 if (dateText != null) {
                     Text(
-                        modifier = Modifier.clickable { openDialog = true },
+                        modifier = Modifier.clickable { showDatePickerDialog = true },
                         text = dateText,
                         style = AppTheme.typography.subhead,
                         color = AppTheme.colors.colorBlue
@@ -77,7 +94,7 @@ fun TodoEditorDeadlineField(
         Switch(
             checked = deadline != null,
             onCheckedChange = {
-                if (it) openDialog = true
+                if (it) showDatePickerDialog = true
                 else onAction(TodoEditorAction.UpdateDeadline(null))
             },
             colors = androidx.compose.material.SwitchDefaults.colors(
@@ -93,13 +110,13 @@ fun TodoEditorDeadlineField(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun DatePicker(
+private fun DeadlineDatePicker(
     date: Long?,
-    open: Boolean,
+    show: Boolean,
     onDialogClose: () -> Unit,
-    onAction: (TodoEditorAction) -> Unit
+    showTimePicker: (Long) -> Unit
 ) {
-    if (!open) return
+    if (!show) return
 
     val datePickerState = rememberDatePickerState(initialSelectedDateMillis = date)
     val saveButtonEnabled by remember(datePickerState.selectedDateMillis) {
@@ -111,16 +128,15 @@ private fun DatePicker(
         confirmButton = {
             TextButton(
                 onClick = {
-                    datePickerState.selectedDateMillis?.let {
-                        onAction(
-                            TodoEditorAction.UpdateDeadline(it)
-                        )
-                    }
                     onDialogClose()
+                    showTimePicker(datePickerState.selectedDateMillis ?: 0)
                 },
                 enabled = saveButtonEnabled
             ) {
-                Text(stringResource(R.string.ok).uppercase(), style = AppTheme.typography.button)
+                Text(
+                    stringResource(R.string.select_time),
+                    style = AppTheme.typography.button
+                )
             }
         },
         dismissButton = {
@@ -130,31 +146,81 @@ private fun DatePicker(
                 }
             ) {
                 Text(
-                    stringResource(R.string.cancel).uppercase(),
+                    stringResource(R.string.cancel),
                     style = AppTheme.typography.button
                 )
             }
-        },
-        colors = DatePickerDefaults.colors(
-
-        )
+        }
     ) {
-        androidx.compose.material3.DatePicker(state = datePickerState)
+        DatePicker(
+            state = datePickerState,
+            dateValidator = { it > System.currentTimeMillis() - DAY },
+        )
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun DeadlineTimePicker(
+    date: Long,
+    open: Boolean,
+    onDialogClose: () -> Unit,
+    onAction: (TodoEditorAction) -> Unit
+) {
+    if (!open) return
+
+    val timePickerState = rememberTimePickerState()
+    TimePickerDialog(
+        onCancel = { onDialogClose() },
+        onConfirm = {
+            val deadline = date + timePickerState.hour * HOUR + timePickerState.minute * MINUTE
+            onAction(TodoEditorAction.UpdateDeadline(deadline))
+            onDialogClose()
+        }
+    ) {
+        TimePicker(state = timePickerState)
+    }
+}
+
+
 @Preview
 @Composable
-fun PreviewTodoEditorDeadlineFieldOn() {
+fun PreviewDeadlineFieldOn() {
     AppTheme {
-        TodoEditorDeadlineField(74343278) {}
+        TodoEditorDeadlineField(1689195600000) {}
     }
 }
 
 @Preview
 @Composable
-fun PreviewTodoEditorDeadlineFieldOff() {
+fun PreviewDeadlineFieldOff() {
     AppTheme {
         TodoEditorDeadlineField(null) {}
+    }
+}
+
+@Preview
+@Composable
+fun PreviewDatePicker() {
+    AppTheme {
+        DeadlineDatePicker(
+            date = 74343278,
+            show = true,
+            onDialogClose = {},
+            showTimePicker = {}
+        )
+    }
+}
+
+@Preview
+@Composable
+fun PreviewTimePicker() {
+    AppTheme {
+        DeadlineTimePicker(
+            date = 74343278,
+            open = true,
+            onDialogClose = {},
+            onAction = {}
+        )
     }
 }

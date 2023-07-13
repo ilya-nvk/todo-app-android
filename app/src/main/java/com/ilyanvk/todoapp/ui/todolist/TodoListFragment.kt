@@ -17,7 +17,7 @@ import com.ilyanvk.todoapp.R
 import com.ilyanvk.todoapp.data.TodoItem
 import com.ilyanvk.todoapp.databinding.FragmentTodoListBinding
 import com.ilyanvk.todoapp.ui.BundleConstants.TO_EDIT_ID
-import com.ilyanvk.todoapp.ui.recyclerview.TodoItemAdapter
+import com.ilyanvk.todoapp.ui.todolist.recyclerview.TodoItemAdapter
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
