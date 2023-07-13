@@ -45,7 +45,13 @@ fun SettingsScreen(currentTheme: ThemeMode, onAction: (SettingsAction) -> Unit) 
                         )
                     }
                 },
-                title = { },
+                title = {
+                    Text(
+                        text = stringResource(id = R.string.current_theme),
+                        style = AppTheme.typography.title,
+                        color = AppTheme.colors.labelPrimary
+                    )
+                },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = AppTheme.colors.backPrimary,
                     navigationIconContentColor = AppTheme.colors.labelPrimary
@@ -58,20 +64,12 @@ fun SettingsScreen(currentTheme: ThemeMode, onAction: (SettingsAction) -> Unit) 
             Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
-                .padding(horizontal = 16.dp)
+                .padding(8.dp)
         ) {
             item {
                 val radioButtonColors = RadioButtonDefaults.colors(
                     selectedColor = AppTheme.colors.colorBlue,
                     unselectedColor = AppTheme.colors.labelPrimary
-                )
-
-                Text(
-                    text = stringResource(id = R.string.current_theme),
-                    style = AppTheme.typography.title,
-                    color = AppTheme.colors.labelPrimary,
-                    modifier = Modifier
-                        .padding(vertical = 8.dp, horizontal = 14.dp)
                 )
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     RadioButton(
