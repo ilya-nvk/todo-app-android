@@ -1,5 +1,6 @@
 package com.ilyanvk.todoapp.ui.settings
 
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -32,5 +33,10 @@ class SettingsViewModel @AssistedInject constructor(
     fun updateTheme(theme: ThemeMode) {
         currentTheme = theme
         sharedPreferencesDataSource.theme = theme
+        when (theme) {
+            ThemeMode.LIGHT -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+            ThemeMode.DARK -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+            ThemeMode.DEFAULT -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+        }
     }
 }
