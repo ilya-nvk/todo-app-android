@@ -8,6 +8,7 @@ import android.net.NetworkRequest
 import android.os.Build
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.lifecycleScope
 import com.ilyanvk.todoapp.Application
@@ -16,6 +17,7 @@ import com.ilyanvk.todoapp.data.TodoSyncFailed
 import com.ilyanvk.todoapp.data.repository.TodoItemsRepository
 import com.ilyanvk.todoapp.data.sharedpreferences.SharedPreferencesDataSource
 import com.ilyanvk.todoapp.ui.notifications.NotificationBroadcastReceiver
+import com.ilyanvk.todoapp.ui.settings.ThemeMode
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -44,6 +46,8 @@ class MainActivity : AppCompatActivity() {
         repository.todoItemList.observe(this) {
             notificationBroadcastReceiver.setNotifications(this, it, sharedPreferencesDataSource)
         }
+
+        setTheme()
     }
 
     override fun onStart() {
@@ -54,6 +58,14 @@ class MainActivity : AppCompatActivity() {
     override fun onStop() {
         super.onStop()
         unregisterNetworkCallback()
+    }
+
+    private fun setTheme() {
+        when (sharedPreferencesDataSource.theme) {
+            ThemeMode.LIGHT -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+            ThemeMode.DARK -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+            ThemeMode.DEFAULT -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+        }
     }
 
     private fun requestNotificationPermission() {

@@ -1,7 +1,9 @@
 package com.ilyanvk.todoapp.ui.settings
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
@@ -64,14 +66,20 @@ fun SettingsScreen(currentTheme: ThemeMode, onAction: (SettingsAction) -> Unit) 
             Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
-                .padding(8.dp)
+                .padding(vertical = 8.dp)
         ) {
             item {
                 val radioButtonColors = RadioButtonDefaults.colors(
                     selectedColor = AppTheme.colors.colorBlue,
                     unselectedColor = AppTheme.colors.labelPrimary
                 )
-                Row(verticalAlignment = Alignment.CenterVertically) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable { onAction(SettingsAction.updateTheme(ThemeMode.DEFAULT)) }
+                        .padding(horizontal = 8.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
                     RadioButton(
                         selected = currentTheme == ThemeMode.DEFAULT,
                         onClick = {
@@ -85,7 +93,13 @@ fun SettingsScreen(currentTheme: ThemeMode, onAction: (SettingsAction) -> Unit) 
                         color = AppTheme.colors.labelPrimary
                     )
                 }
-                Row(verticalAlignment = Alignment.CenterVertically) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable { onAction(SettingsAction.updateTheme(ThemeMode.LIGHT)) }
+                        .padding(horizontal = 8.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
                     RadioButton(
                         selected = currentTheme == ThemeMode.LIGHT,
                         onClick = {
@@ -100,7 +114,13 @@ fun SettingsScreen(currentTheme: ThemeMode, onAction: (SettingsAction) -> Unit) 
                     )
 
                 }
-                Row(verticalAlignment = Alignment.CenterVertically) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable { onAction(SettingsAction.updateTheme(ThemeMode.DARK)) }
+                        .padding(horizontal = 8.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
                     RadioButton(
                         selected = currentTheme == ThemeMode.DARK,
                         onClick = {
