@@ -69,22 +69,20 @@ class TodoItemsRepositoryImpl @Inject constructor(
     }
 
     override suspend fun syncDataSources() {
-        var localTodoItemList = localDataSource.getTodoItemList()
         try {
             val remoteTodoItemList = remoteDataSource.getTodoItemList()
             if (sharedPreferencesDataSource.needSync) {
                 localDataSource.addTodoItemList(remoteTodoItemList)
-                remoteDataSource.updateTodoItemList(localTodoItemList)
+                remoteDataSource.updateTodoItemList(localDataSource.getTodoItemList())
                 sharedPreferencesDataSource.needSync = false
             } else {
                 localDataSource.forceUpdateTodoItemList(remoteTodoItemList)
-                localTodoItemList = remoteTodoItemList
             }
         } catch (e: Exception) {
             sharedPreferencesDataSource.needSync = true
             throw TodoSyncFailed()
         } finally {
-            _localTodoItemList.postValue(localTodoItemList)
+            _localTodoItemList.postValue(localDataSource.getTodoItemList())
         }
     }
 }
