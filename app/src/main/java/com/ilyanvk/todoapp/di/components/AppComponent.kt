@@ -13,8 +13,13 @@ import dagger.Component
 
 @AppScope
 @Component(
-    modules = [ApiModule::class, AppModule::class, ClientModule::class,
-        DataSourceModule::class, DatabaseModule::class, RepositoryModule::class]
+    modules = [
+        ApiModule::class,
+        AppModule::class,
+        ClientModule::class,
+        DataSourceModule::class,
+        DatabaseModule::class,
+        RepositoryModule::class]
 )
 interface AppComponent {
     fun injectApplication(application: Application)

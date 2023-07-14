@@ -16,8 +16,4 @@ class DatabaseModule {
             context, TodoItemDatabase::class.java, "todo_items.db"
         ).build()
     }
-
-    @AppScope
-    @Provides
-    fun provideTodoItemDao(database: TodoItemDatabase) = database.dao
 }

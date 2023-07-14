@@ -1,16 +1,21 @@
 package com.ilyanvk.todoapp.ui
 
+import android.Manifest
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkRequest
+import android.os.Build
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import androidx.lifecycle.lifecycleScope
 import com.ilyanvk.todoapp.Application
 import com.ilyanvk.todoapp.R
 import com.ilyanvk.todoapp.data.TodoSyncFailed
 import com.ilyanvk.todoapp.data.repository.TodoItemsRepository
+import com.ilyanvk.todoapp.data.sharedpreferences.SharedPreferencesDataSource
+import com.ilyanvk.todoapp.ui.notifications.NotificationBroadcastReceiver
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -21,7 +26,10 @@ import javax.inject.Inject
 class MainActivity : AppCompatActivity() {
     @Inject
     lateinit var repository: TodoItemsRepository
-    private lateinit var networkCallback: ConnectivityManager.NetworkCallback
+
+    @Inject
+    lateinit var sharedPreferencesDataSource: SharedPreferencesDataSource
+    private var networkCallback: ConnectivityManager.NetworkCallback? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,8 +38,13 @@ class MainActivity : AppCompatActivity() {
         (application as Application).appComponent.injectMainActivity(this)
 
         networkCallback = createNetworkCallback()
-    }
 
+        requestNotificationPermission()
+        val notificationBroadcastReceiver = NotificationBroadcastReceiver()
+        repository.todoItemList.observe(this) {
+            notificationBroadcastReceiver.setNotifications(this, it, sharedPreferencesDataSource)
+        }
+    }
 
     override fun onStart() {
         super.onStart()
@@ -41,6 +54,16 @@ class MainActivity : AppCompatActivity() {
     override fun onStop() {
         super.onStop()
         unregisterNetworkCallback()
+    }
+
+    private fun requestNotificationPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(Manifest.permission.POST_NOTIFICATIONS),
+                1
+            )
+        }
     }
 
     private fun createNetworkCallback(): ConnectivityManager.NetworkCallback {
@@ -70,13 +93,13 @@ class MainActivity : AppCompatActivity() {
         val connectivityManager =
             getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         val networkRequest = NetworkRequest.Builder().build()
-        connectivityManager.registerNetworkCallback(networkRequest, networkCallback)
+        networkCallback?.let { connectivityManager.registerNetworkCallback(networkRequest, it) }
     }
 
     private fun unregisterNetworkCallback() {
         val connectivityManager =
             getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        connectivityManager.unregisterNetworkCallback(networkCallback)
+        networkCallback?.let { connectivityManager.unregisterNetworkCallback(it) }
     }
 
     companion object Constants {

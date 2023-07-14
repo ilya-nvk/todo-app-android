@@ -74,6 +74,14 @@ class SharedPreferencesDataSourceImpl @Inject constructor(context: Context) :
         return deviceId!!
     }
 
+    override var notificationIds: Set<String>
+        get() = preferences.getStringSet(NOTIFICATION_IDS_TAG, mutableSetOf())
+            ?: mutableSetOf()
+        set(value) {
+            editor.putStringSet(NOTIFICATION_IDS_TAG, value)
+            editor.apply()
+        }
+
 
     companion object {
         private const val REVISION_TAG = "currentRevision"
@@ -81,5 +89,6 @@ class SharedPreferencesDataSourceImpl @Inject constructor(context: Context) :
         private const val SYNC_FLAG_TAG = "syncFlag"
         private const val SHOW_COMPLETED_TAG = "showCompleted"
         private const val THEME_TAG = "theme"
+        private const val NOTIFICATION_IDS_TAG = "notificationIds"
     }
 }

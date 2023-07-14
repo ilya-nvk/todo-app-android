@@ -12,6 +12,7 @@ interface SharedPreferencesDataSource {
     var needSync: Boolean
     var showCompletedTodoItems: Boolean
     var theme: ThemeMode
+    var notificationIds: Set<String>
     fun getDeviceId(): String
 
     companion object {
