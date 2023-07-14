@@ -1,4 +1,4 @@
-package com.ilyanvk.todoapp.ui.todoeditor.components
+package com.ilyanvk.todoapp.ui.todoeditor.compose.components
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close

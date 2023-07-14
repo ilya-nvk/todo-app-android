@@ -52,5 +52,5 @@ object TodoNotificationManager {
     }
 
 
-    const val CHANNEL_ID = "TodoAppChannel"
+    private const val CHANNEL_ID = "TodoAppChannel"
 }

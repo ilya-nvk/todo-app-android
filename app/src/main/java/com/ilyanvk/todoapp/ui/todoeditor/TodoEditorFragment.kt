@@ -7,12 +7,14 @@ import android.view.ViewGroup
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import com.ilyanvk.todoapp.Application
 import com.ilyanvk.todoapp.R
 import com.ilyanvk.todoapp.data.TodoItem
 import com.ilyanvk.todoapp.ui.BundleConstants.TO_EDIT_ID
 import com.ilyanvk.todoapp.ui.theme.AppTheme
+import com.ilyanvk.todoapp.ui.todoeditor.compose.TodoEditorScreen
 
 /**
  * [Fragment] for editing or creating a [TodoItem].
@@ -28,6 +30,13 @@ class TodoEditorFragment : Fragment() {
     private val viewModel: TodoEditorViewModel by activityViewModels {
         TodoEditorViewModel.Factory(component.provideTodoEditorViewModelFactory())
     }
+
+    private val navOptions = NavOptions.Builder()
+        .setEnterAnim(R.anim.fade_in)
+        .setExitAnim(R.anim.slide_out)
+        .setPopEnterAnim(R.anim.fade_out)
+        .setPopExitAnim(R.anim.slide_in)
+        .build()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -55,17 +64,29 @@ class TodoEditorFragment : Fragment() {
     private fun onTodoEditorAction(action: TodoEditorAction) {
         when (action) {
             TodoEditorAction.Close -> {
-                findNavController().navigate(R.id.action_todoEditor_to_todoList)
+                findNavController().navigate(
+                    R.id.action_todoEditor_to_todoList,
+                    Bundle(),
+                    navOptions
+                )
             }
 
             TodoEditorAction.Delete -> {
                 viewModel.deleteTodoItem()
-                findNavController().navigate(R.id.action_todoEditor_to_todoList)
+                findNavController().navigate(
+                    R.id.action_todoEditor_to_todoList,
+                    Bundle(),
+                    navOptions
+                )
             }
 
             TodoEditorAction.Save -> {
                 viewModel.saveTodoItem()
-                findNavController().navigate(R.id.action_todoEditor_to_todoList)
+                findNavController().navigate(
+                    R.id.action_todoEditor_to_todoList,
+                    Bundle(),
+                    navOptions
+                )
             }
 
             is TodoEditorAction.UpdateDeadline -> {

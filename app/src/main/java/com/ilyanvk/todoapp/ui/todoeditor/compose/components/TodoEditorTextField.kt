@@ -1,4 +1,4 @@
-package com.ilyanvk.todoapp.ui.todoeditor.components
+package com.ilyanvk.todoapp.ui.todoeditor.compose.components
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth

@@ -1,4 +1,4 @@
-package com.ilyanvk.todoapp.ui.todoeditor
+package com.ilyanvk.todoapp.ui.todoeditor.compose
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
@@ -14,12 +14,13 @@ import androidx.compose.ui.unit.dp
 import com.ilyanvk.todoapp.data.Priority
 import com.ilyanvk.todoapp.data.TodoItem
 import com.ilyanvk.todoapp.ui.theme.AppTheme
-import com.ilyanvk.todoapp.ui.todoeditor.components.TodoEditorDeadlineField
-import com.ilyanvk.todoapp.ui.todoeditor.components.TodoEditorDeleteField
-import com.ilyanvk.todoapp.ui.todoeditor.components.TodoEditorDivider
-import com.ilyanvk.todoapp.ui.todoeditor.components.TodoEditorPriorityField
-import com.ilyanvk.todoapp.ui.todoeditor.components.TodoEditorTextField
-import com.ilyanvk.todoapp.ui.todoeditor.components.TodoEditorTopBar
+import com.ilyanvk.todoapp.ui.todoeditor.TodoEditorAction
+import com.ilyanvk.todoapp.ui.todoeditor.compose.components.TodoEditorDeadlineField
+import com.ilyanvk.todoapp.ui.todoeditor.compose.components.TodoEditorDeleteField
+import com.ilyanvk.todoapp.ui.todoeditor.compose.components.TodoEditorDivider
+import com.ilyanvk.todoapp.ui.todoeditor.compose.components.TodoEditorPriorityField
+import com.ilyanvk.todoapp.ui.todoeditor.compose.components.TodoEditorTextField
+import com.ilyanvk.todoapp.ui.todoeditor.compose.components.TodoEditorTopBar
 
 @Composable
 fun TodoEditorScreen(

@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import com.ilyanvk.todoapp.Application
 import com.ilyanvk.todoapp.R
@@ -19,6 +20,13 @@ class SettingsFragment : Fragment() {
     private val viewModel: SettingsViewModel by activityViewModels {
         SettingsViewModel.Factory(component.provideSettingsViewModelFactory())
     }
+
+    private val navOptions = NavOptions.Builder()
+        .setEnterAnim(R.anim.fade_in)
+        .setExitAnim(R.anim.slide_out)
+        .setPopEnterAnim(R.anim.fade_out)
+        .setPopExitAnim(R.anim.slide_in)
+        .build()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -41,7 +49,12 @@ class SettingsFragment : Fragment() {
 
     private fun onSettingsAction(action: SettingsAction) {
         when (action) {
-            SettingsAction.Close -> findNavController().navigate(R.id.action_settingsFragment_to_todoList)
+            SettingsAction.Close -> findNavController().navigate(
+                R.id.action_settingsFragment_to_todoList,
+                Bundle(),
+                navOptions
+            )
+
             is SettingsAction.updateTheme -> viewModel.updateTheme(action.theme)
         }
     }

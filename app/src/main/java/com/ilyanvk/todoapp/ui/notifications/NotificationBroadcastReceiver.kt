@@ -49,7 +49,12 @@ class NotificationBroadcastReceiver : BroadcastReceiver() {
 
         var counter = 0
         todoItemList.forEach {
-            if (it.deadline == null || it.deadline - TimeZone.getDefault().rawOffset <= System.currentTimeMillis()) return@forEach
+            if (it.isCompleted ||
+                it.deadline == null ||
+                it.deadline - TimeZone.getDefault().rawOffset <= System.currentTimeMillis()
+            ) {
+                return@forEach
+            }
 
             val notificationIntent =
                 Intent(context, NotificationBroadcastReceiver::class.java).apply {

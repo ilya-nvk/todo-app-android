@@ -1,6 +1,6 @@
 @file:OptIn(ExperimentalMaterial3Api::class)
 
-package com.ilyanvk.todoapp.ui.todoeditor.components
+package com.ilyanvk.todoapp.ui.todoeditor.compose.components
 
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.FastOutSlowInEasing
