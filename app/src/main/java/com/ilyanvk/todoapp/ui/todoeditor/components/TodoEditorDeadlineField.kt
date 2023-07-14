@@ -35,6 +35,8 @@ import com.ilyanvk.todoapp.ui.StringConverter.MINUTE
 import com.ilyanvk.todoapp.ui.StringConverter.toDateTimeString
 import com.ilyanvk.todoapp.ui.theme.AppTheme
 import com.ilyanvk.todoapp.ui.todoeditor.TodoEditorAction
+import java.util.Calendar
+import java.util.TimeZone
 
 @Composable
 fun TodoEditorDeadlineField(
@@ -64,7 +66,8 @@ fun TodoEditorDeadlineField(
         )
 
         DeadlineTimePicker(
-            date = currentDeadline ?: 0,
+            selectedDate = currentDeadline ?: 0,
+            deadline = deadline,
             open = showTimePickerDialog,
             onDialogClose = { showTimePickerDialog = false },
             onAction = onAction
@@ -118,7 +121,10 @@ private fun DeadlineDatePicker(
 ) {
     if (!show) return
 
-    val datePickerState = rememberDatePickerState(initialSelectedDateMillis = date)
+    val datePickerState = rememberDatePickerState(
+        initialSelectedDateMillis = (date?.minus(TimeZone.getDefault().rawOffset))
+            ?: System.currentTimeMillis()
+    )
     val saveButtonEnabled by remember(datePickerState.selectedDateMillis) {
         derivedStateOf { datePickerState.selectedDateMillis != null }
     }
@@ -162,19 +168,26 @@ private fun DeadlineDatePicker(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun DeadlineTimePicker(
-    date: Long,
+    selectedDate: Long,
+    deadline: Long?,
     open: Boolean,
     onDialogClose: () -> Unit,
     onAction: (TodoEditorAction) -> Unit
 ) {
     if (!open) return
-
-    val timePickerState = rememberTimePickerState()
+    val calendar = Calendar.getInstance()
+    calendar.timeInMillis =
+        (deadline?.minus(TimeZone.getDefault().rawOffset)) ?: System.currentTimeMillis()
+    val timePickerState = rememberTimePickerState(
+        initialHour = calendar.get(Calendar.HOUR_OF_DAY),
+        initialMinute = calendar.get(Calendar.MINUTE)
+    )
     TimePickerDialog(
         onCancel = { onDialogClose() },
         onConfirm = {
-            val deadline = date + timePickerState.hour * HOUR + timePickerState.minute * MINUTE
-            onAction(TodoEditorAction.UpdateDeadline(deadline))
+            val newDeadline =
+                selectedDate + timePickerState.hour * HOUR + timePickerState.minute * MINUTE
+            onAction(TodoEditorAction.UpdateDeadline(newDeadline))
             onDialogClose()
         }
     ) {
@@ -217,9 +230,10 @@ fun PreviewDatePicker() {
 fun PreviewTimePicker() {
     AppTheme {
         DeadlineTimePicker(
-            date = 74343278,
+            selectedDate = 74343278,
             open = true,
             onDialogClose = {},
+            deadline = 74343278,
             onAction = {}
         )
     }
