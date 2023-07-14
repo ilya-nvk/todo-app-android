@@ -69,7 +69,6 @@ class NotificationBroadcastReceiver : BroadcastReceiver() {
                 PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
             )
 
-
             val alarmAt =
                 it.deadline - TimeZone.getDefault().rawOffset
             alarmManager.setExactAndAllowWhileIdle(
@@ -77,6 +76,8 @@ class NotificationBroadcastReceiver : BroadcastReceiver() {
                 alarmAt,
                 pendingIntent
             )
+
+            Log.d("NotificationBroadcastReceiver", "Notification set for ${it.text}")
         }
 
         sharedPreferencesDataSource.notificationIds = todoItemList.map { it.id }.toSet()

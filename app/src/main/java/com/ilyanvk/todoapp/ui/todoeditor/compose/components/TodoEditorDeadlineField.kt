@@ -122,8 +122,7 @@ private fun DeadlineDatePicker(
     if (!show) return
 
     val datePickerState = rememberDatePickerState(
-        initialSelectedDateMillis = (date?.minus(TimeZone.getDefault().rawOffset))
-            ?: System.currentTimeMillis()
+        initialSelectedDateMillis = date ?: System.currentTimeMillis()
     )
     val saveButtonEnabled by remember(datePickerState.selectedDateMillis) {
         derivedStateOf { datePickerState.selectedDateMillis != null }
