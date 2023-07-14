@@ -3,7 +3,7 @@
 package com.ilyanvk.todoapp.ui.todoeditor.components
 
 import androidx.compose.animation.animateColorAsState
-import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -69,7 +69,7 @@ fun TodoEditorPriorityField(
                 Priority.HIGH -> AppTheme.colors.colorRed
                 else -> AppTheme.colors.labelSecondary
             },
-            animationSpec = tween(200, easing = LinearEasing),
+            animationSpec = tween(200, easing = FastOutSlowInEasing),
             label = "color"
         )
         Text(
