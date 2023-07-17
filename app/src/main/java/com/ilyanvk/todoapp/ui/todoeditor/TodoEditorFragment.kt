@@ -12,7 +12,6 @@ import androidx.navigation.fragment.findNavController
 import com.ilyanvk.todoapp.Application
 import com.ilyanvk.todoapp.R
 import com.ilyanvk.todoapp.data.TodoItem
-import com.ilyanvk.todoapp.ui.BundleConstants.TO_EDIT_ID
 import com.ilyanvk.todoapp.ui.theme.AppTheme
 import com.ilyanvk.todoapp.ui.todoeditor.compose.TodoEditorScreen
 
@@ -101,5 +100,9 @@ class TodoEditorFragment : Fragment() {
                 viewModel.updateText(action.text)
             }
         }
+    }
+
+    companion object {
+        const val TO_EDIT_ID = "todoItemToEdit"
     }
 }

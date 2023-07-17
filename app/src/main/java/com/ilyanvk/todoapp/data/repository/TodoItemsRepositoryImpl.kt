@@ -7,6 +7,7 @@ import com.ilyanvk.todoapp.data.TodoSyncFailed
 import com.ilyanvk.todoapp.data.localdatasource.LocalDataSource
 import com.ilyanvk.todoapp.data.remotedatasource.RemoteDataSource
 import com.ilyanvk.todoapp.data.sharedpreferences.SharedPreferencesDataSource
+import com.ilyanvk.todoapp.di.scopes.AppScope
 import javax.inject.Inject
 
 /**
@@ -17,6 +18,7 @@ import javax.inject.Inject
  * @param sharedPreferencesDataSource The shared preferences data source
  * for storing revision and synchronization information.
  */
+@AppScope
 class TodoItemsRepositoryImpl @Inject constructor(
     private val localDataSource: LocalDataSource,
     private val remoteDataSource: RemoteDataSource,

@@ -55,7 +55,7 @@ class SettingsFragment : Fragment() {
                 navOptions
             )
 
-            is SettingsAction.updateTheme -> viewModel.updateTheme(action.theme)
+            is SettingsAction.UpdateTheme -> viewModel.updateTheme(action.theme)
         }
     }
 }

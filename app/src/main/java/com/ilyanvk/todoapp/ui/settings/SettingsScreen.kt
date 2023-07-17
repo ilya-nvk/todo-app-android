@@ -76,14 +76,14 @@ fun SettingsScreen(currentTheme: ThemeMode, onAction: (SettingsAction) -> Unit) 
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .clickable { onAction(SettingsAction.updateTheme(ThemeMode.DEFAULT)) }
+                        .clickable { onAction(SettingsAction.UpdateTheme(ThemeMode.DEFAULT)) }
                         .padding(horizontal = 8.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     RadioButton(
                         selected = currentTheme == ThemeMode.DEFAULT,
                         onClick = {
-                            onAction(SettingsAction.updateTheme(ThemeMode.DEFAULT))
+                            onAction(SettingsAction.UpdateTheme(ThemeMode.DEFAULT))
                         },
                         colors = radioButtonColors
                     )
@@ -96,14 +96,14 @@ fun SettingsScreen(currentTheme: ThemeMode, onAction: (SettingsAction) -> Unit) 
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .clickable { onAction(SettingsAction.updateTheme(ThemeMode.LIGHT)) }
+                        .clickable { onAction(SettingsAction.UpdateTheme(ThemeMode.LIGHT)) }
                         .padding(horizontal = 8.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     RadioButton(
                         selected = currentTheme == ThemeMode.LIGHT,
                         onClick = {
-                            onAction(SettingsAction.updateTheme(ThemeMode.LIGHT))
+                            onAction(SettingsAction.UpdateTheme(ThemeMode.LIGHT))
                         },
                         colors = radioButtonColors
                     )
@@ -117,14 +117,14 @@ fun SettingsScreen(currentTheme: ThemeMode, onAction: (SettingsAction) -> Unit) 
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .clickable { onAction(SettingsAction.updateTheme(ThemeMode.DARK)) }
+                        .clickable { onAction(SettingsAction.UpdateTheme(ThemeMode.DARK)) }
                         .padding(horizontal = 8.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     RadioButton(
                         selected = currentTheme == ThemeMode.DARK,
                         onClick = {
-                            onAction(SettingsAction.updateTheme(ThemeMode.DARK))
+                            onAction(SettingsAction.UpdateTheme(ThemeMode.DARK))
                         },
                         colors = radioButtonColors
                     )

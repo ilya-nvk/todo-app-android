@@ -1,6 +1,6 @@
 package com.ilyanvk.todoapp.ui.settings
 
 sealed class SettingsAction {
-    data class updateTheme(val theme: ThemeMode) : SettingsAction()
+    data class UpdateTheme(val theme: ThemeMode) : SettingsAction()
     object Close : SettingsAction()
 }

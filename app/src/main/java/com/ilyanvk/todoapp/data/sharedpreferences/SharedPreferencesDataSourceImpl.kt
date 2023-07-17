@@ -2,6 +2,7 @@ package com.ilyanvk.todoapp.data.sharedpreferences
 
 import android.content.Context
 import com.ilyanvk.todoapp.data.sharedpreferences.SharedPreferencesDataSource.Companion.NAME
+import com.ilyanvk.todoapp.di.scopes.AppScope
 import com.ilyanvk.todoapp.ui.settings.ThemeMode
 import java.util.UUID
 import javax.inject.Inject
@@ -14,6 +15,7 @@ import javax.inject.Inject
  *
  * @param context The application context.
  */
+@AppScope
 class SharedPreferencesDataSourceImpl @Inject constructor(context: Context) :
     SharedPreferencesDataSource {
     private val preferences = context.getSharedPreferences(NAME, Context.MODE_PRIVATE)

@@ -6,6 +6,7 @@ import com.ilyanvk.todoapp.di.modules.AppModule
 import com.ilyanvk.todoapp.di.modules.ClientModule
 import com.ilyanvk.todoapp.di.modules.DataSourceModule
 import com.ilyanvk.todoapp.di.modules.DatabaseModule
+import com.ilyanvk.todoapp.di.modules.NotificationsModule
 import com.ilyanvk.todoapp.di.modules.RepositoryModule
 import com.ilyanvk.todoapp.di.scopes.AppScope
 import com.ilyanvk.todoapp.ui.MainActivity
@@ -19,7 +20,8 @@ import dagger.Component
         ClientModule::class,
         DataSourceModule::class,
         DatabaseModule::class,
-        RepositoryModule::class]
+        RepositoryModule::class,
+        NotificationsModule::class]
 )
 interface AppComponent {
     fun injectApplication(application: Application)

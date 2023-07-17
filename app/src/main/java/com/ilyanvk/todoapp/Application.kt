@@ -23,12 +23,15 @@ class Application : Application(), Provider {
     @Inject
     lateinit var workerFactory: SyncWorkerFactory
 
+    @Inject
+    lateinit var todoNotificationManager: TodoNotificationManager
+
     override fun onCreate() {
         super.onCreate()
         appComponent = DaggerAppComponent.builder().appModule(AppModule(this)).build()
         appComponent.injectApplication(this)
         setUpPeriodicDataSync()
-        TodoNotificationManager.createNotificationChannel(this)
+        todoNotificationManager.createNotificationChannel(this)
     }
 
     private fun setUpPeriodicDataSync() {

@@ -31,6 +31,9 @@ class MainActivity : AppCompatActivity() {
 
     @Inject
     lateinit var sharedPreferencesDataSource: SharedPreferencesDataSource
+
+    @Inject
+    lateinit var notificationBroadcastReceiver: NotificationBroadcastReceiver
     private var networkCallback: ConnectivityManager.NetworkCallback? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -42,9 +45,8 @@ class MainActivity : AppCompatActivity() {
         networkCallback = createNetworkCallback()
 
         requestNotificationPermission()
-        val notificationBroadcastReceiver = NotificationBroadcastReceiver()
         repository.todoItemList.observe(this) {
-            notificationBroadcastReceiver.setNotifications(this, it, sharedPreferencesDataSource)
+            notificationBroadcastReceiver.setNotifications(it)
         }
 
         setTheme()
