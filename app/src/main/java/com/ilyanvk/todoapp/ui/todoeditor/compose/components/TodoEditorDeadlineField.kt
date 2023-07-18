@@ -43,18 +43,19 @@ fun TodoEditorDeadlineField(
     deadline: Long?,
     onAction: (TodoEditorAction) -> Unit
 ) {
+    var currentDeadline by remember { mutableStateOf(deadline) }
+    var showDatePickerDialog by remember { mutableStateOf(false) }
+    var showTimePickerDialog by remember { mutableStateOf(false) }
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp)
+            .clickable { showDatePickerDialog = true }
+            .padding(start = 16.dp, top = 0.dp, end = 16.dp, bottom = 24.dp)
             .height(72.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        var currentDeadline by remember { mutableStateOf(deadline) }
-        var showDatePickerDialog by remember { mutableStateOf(false) }
-        var showTimePickerDialog by remember { mutableStateOf(false) }
-
         DeadlineDatePicker(
             date = deadline,
             show = showDatePickerDialog,
@@ -86,7 +87,6 @@ fun TodoEditorDeadlineField(
                     }
                 if (dateText != null) {
                     Text(
-                        modifier = Modifier.clickable { showDatePickerDialog = true },
                         text = dateText,
                         style = AppTheme.typography.subhead,
                         color = AppTheme.colors.colorBlue
