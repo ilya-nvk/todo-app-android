@@ -1,6 +1,9 @@
 <resources>
 
     <style name="Theme.ToDoApp" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/color_light_blue</item>
+        <item name="colorOnPrimary">@color/back_light_secondary</item>
+        <item name="backgroundColor">@color/back_light_primary</item>
         <item name="android:statusBarColor">@color/back_light_primary</item>
         <item name="android:windowLightStatusBar">true</item>
         <item name="support_separator">@color/support_light_separator</item>

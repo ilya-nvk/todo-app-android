@@ -1,4 +1,4 @@
-package com.ilyanvk.todoapp.ui.recyclerview
+package com.ilyanvk.todoapp.ui.todolist.recyclerview
 
 import android.graphics.Paint
 import android.util.TypedValue
@@ -10,7 +10,7 @@ import com.ilyanvk.todoapp.R
 import com.ilyanvk.todoapp.data.Priority
 import com.ilyanvk.todoapp.data.TodoItem
 import com.ilyanvk.todoapp.databinding.TodoItemBinding
-import java.text.DateFormat
+import com.ilyanvk.todoapp.ui.StringConverter.toDateTimeString
 
 /**
  * ViewHolder class for displaying a single [TodoItem] in a [RecyclerView].
@@ -67,8 +67,7 @@ class TodoItemViewHolder(private val binding: TodoItemBinding) :
     private fun setUpDeadlineText(todoItem: TodoItem) {
         if (todoItem.deadline != null) {
             deadline.visibility = View.VISIBLE
-            deadline.text =
-                DateFormat.getDateInstance(DateFormat.DEFAULT).format(todoItem.deadline)
+            deadline.text = todoItem.deadline.toDateTimeString()
         } else {
             deadline.visibility = View.GONE
         }

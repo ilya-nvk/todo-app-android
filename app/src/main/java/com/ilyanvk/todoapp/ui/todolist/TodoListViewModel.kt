@@ -12,7 +12,6 @@ import com.ilyanvk.todoapp.data.sharedpreferences.SharedPreferencesDataSource
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 /**
@@ -24,8 +23,17 @@ import kotlinx.coroutines.launch
 class TodoListViewModel @AssistedInject constructor(
     private val repository: TodoItemsRepository,
     private val sharedPreferences: SharedPreferencesDataSource
-) :
-    ViewModel() {
+) : ViewModel() {
+
+    private val _networkState = MutableLiveData<NetworkState>()
+    val networkState: LiveData<NetworkState>
+        get() = _networkState
+
+    val todoItemList: LiveData<List<TodoItem>>
+        get() = repository.todoItemList
+
+    val showCompleted
+        get() = sharedPreferences.showCompletedTodoItems
 
     @AssistedFactory
     interface TodoListViewModelFactory {
@@ -40,21 +48,9 @@ class TodoListViewModel @AssistedInject constructor(
         }
     }
 
-    private val _networkState = MutableLiveData<NetworkState>()
-    val networkState: LiveData<NetworkState>
-        get() = _networkState
-
-    private val _todoItemList = MutableLiveData<List<TodoItem>>()
-    val todoItemList: LiveData<List<TodoItem>>
-        get() = _todoItemList
-
-    val showCompleted
-        get() = sharedPreferences.showCompletedTodoItems
-
     init {
         viewModelScope.launch(Dispatchers.IO) {
-            repository.syncFlowList()
-            repository.todoItemListFlow.collectLatest { _todoItemList.postValue(it) }
+            repository.syncList()
             syncData()
         }
     }
@@ -70,9 +66,6 @@ class TodoListViewModel @AssistedInject constructor(
         } catch (_: TodoSyncFailed) {
             _networkState.postValue(NetworkState.Error)
         }
-        repository.todoItemListFlow.collectLatest {
-            _todoItemList.postValue(it)
-        }
     }
 
     fun changeCompleteStatus(todoItem: TodoItem) {
@@ -84,9 +77,6 @@ class TodoListViewModel @AssistedInject constructor(
             try {
                 repository.updateTodoItem(newTodoItem)
             } catch (_: TodoSyncFailed) {
-            }
-            repository.todoItemListFlow.collectLatest {
-                _todoItemList.postValue(it)
             }
         }
     }

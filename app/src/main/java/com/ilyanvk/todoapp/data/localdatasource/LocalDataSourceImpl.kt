@@ -3,6 +3,7 @@ package com.ilyanvk.todoapp.data.localdatasource
 import com.ilyanvk.todoapp.data.TodoItem
 import com.ilyanvk.todoapp.data.localdatasource.room.TodoItemDatabase
 import com.ilyanvk.todoapp.data.localdatasource.room.TodoItemEntity
+import com.ilyanvk.todoapp.di.scopes.AppScope
 import javax.inject.Inject
 
 /**
@@ -10,6 +11,7 @@ import javax.inject.Inject
  *
  * @param database the Room database.
  */
+@AppScope
 class LocalDataSourceImpl @Inject constructor(
     private val database: TodoItemDatabase
 ) : LocalDataSource {

@@ -9,12 +9,11 @@ import androidx.work.NetworkType
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import com.ilyanvk.todoapp.data.workmanager.SyncWorker
-import com.ilyanvk.todoapp.data.workmanager.SyncWorkerConstants.REPEAT_INTERVAL
-import com.ilyanvk.todoapp.data.workmanager.SyncWorkerConstants.UNIQUE_WORK_NAME
 import com.ilyanvk.todoapp.data.workmanager.SyncWorkerFactory
 import com.ilyanvk.todoapp.di.components.AppComponent
 import com.ilyanvk.todoapp.di.components.DaggerAppComponent
 import com.ilyanvk.todoapp.di.modules.AppModule
+import com.ilyanvk.todoapp.ui.notifications.TodoNotificationManager
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -23,14 +22,19 @@ class Application : Application(), Provider {
 
     @Inject
     lateinit var workerFactory: SyncWorkerFactory
+
+    @Inject
+    lateinit var todoNotificationManager: TodoNotificationManager
+
     override fun onCreate() {
         super.onCreate()
         appComponent = DaggerAppComponent.builder().appModule(AppModule(this)).build()
         appComponent.injectApplication(this)
-        setupPeriodicDataSync()
+        setUpPeriodicDataSync()
+        todoNotificationManager.createNotificationChannel(this)
     }
 
-    private fun setupPeriodicDataSync() {
+    private fun setUpPeriodicDataSync() {
         val workRequest = PeriodicWorkRequestBuilder<SyncWorker>(REPEAT_INTERVAL, TimeUnit.HOURS)
             .setConstraints(
                 Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build()
@@ -47,5 +51,10 @@ class Application : Application(), Provider {
     override fun getWorkManagerConfiguration(): Configuration {
         return Configuration.Builder().setMinimumLoggingLevel(android.util.Log.INFO)
             .setWorkerFactory(workerFactory).build()
+    }
+
+    companion object Constants {
+        const val REPEAT_INTERVAL = 8L
+        const val UNIQUE_WORK_NAME = "dataSync"
     }
 }

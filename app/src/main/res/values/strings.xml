@@ -25,4 +25,15 @@
     <string name="sync_successful">Синхронизация прошла успешно</string>
     <string name="sync_failed">Синхронизация не удалась :(</string>
     <string name="remote_data_update_failed">Не удалось обновить данные на сервере</string>
+    <string name="ok">ОК</string>
+    <string name="cancel">Отмена</string>
+    <string name="go_back">Назад</string>
+    <string name="default_theme">По умолчанию</string>
+    <string name="light_theme">Светлая</string>
+    <string name="dark_theme">Тёмная</string>
+    <string name="current_theme">Текущая тема</string>
+    <string name="settings">Настройки</string>
+    <string name="select_time">Выбор времени</string>
+    <string name="notification_channel_name">Уведомления</string>
+    <string name="notification_channel_description">Напоминания о задачах</string>
 </resources>

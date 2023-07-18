@@ -1,4 +1,4 @@
-package com.ilyanvk.todoapp.ui.recyclerview
+package com.ilyanvk.todoapp.ui.todolist.recyclerview
 
 import android.view.LayoutInflater
 import android.view.View

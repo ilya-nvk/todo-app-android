@@ -7,7 +7,7 @@ import java.util.UUID
  */
 data class TodoItem(
     val id: String = UUID.randomUUID().toString(),
-    val text: String,
+    val text: String = "",
     val priority: Priority = Priority.MEDIUM,
     val deadline: Long? = null,
     val isCompleted: Boolean = false,

@@ -1,4 +1,4 @@
-package com.ilyanvk.todoapp.ui.recyclerview
+package com.ilyanvk.todoapp.ui.todolist.recyclerview
 
 import androidx.recyclerview.widget.DiffUtil
 import com.ilyanvk.todoapp.data.TodoItem

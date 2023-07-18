@@ -6,11 +6,13 @@ import com.ilyanvk.todoapp.data.remotedatasource.retrofit.models.TodoItemApiRequ
 import com.ilyanvk.todoapp.data.remotedatasource.retrofit.models.TodoItemApiRequestList
 import com.ilyanvk.todoapp.data.remotedatasource.retrofit.models.TodoItemServer
 import com.ilyanvk.todoapp.data.sharedpreferences.SharedPreferencesDataSource
+import com.ilyanvk.todoapp.di.scopes.AppScope
 import javax.inject.Inject
 
 /**
  * Implementation of the [RemoteDataSource] interface that interacts with the [TodoItemApi].
  */
+@AppScope
 class RemoteDataSourceImpl @Inject constructor(
     private val api: TodoItemApi,
     private val sharedPreferencesDataSource: SharedPreferencesDataSource

@@ -2,6 +2,8 @@ package com.ilyanvk.todoapp.data.sharedpreferences
 
 import android.content.Context
 import com.ilyanvk.todoapp.data.sharedpreferences.SharedPreferencesDataSource.Companion.NAME
+import com.ilyanvk.todoapp.di.scopes.AppScope
+import com.ilyanvk.todoapp.ui.settings.ThemeMode
 import java.util.UUID
 import javax.inject.Inject
 
@@ -13,6 +15,7 @@ import javax.inject.Inject
  *
  * @param context The application context.
  */
+@AppScope
 class SharedPreferencesDataSourceImpl @Inject constructor(context: Context) :
     SharedPreferencesDataSource {
     private val preferences = context.getSharedPreferences(NAME, Context.MODE_PRIVATE)
@@ -41,6 +44,14 @@ class SharedPreferencesDataSourceImpl @Inject constructor(context: Context) :
             editor.putBoolean(SHOW_COMPLETED_TAG, value)
             editor.apply()
         }
+    override var theme: ThemeMode
+        get() = ThemeMode.values().find {
+            it.ordinal == preferences.getInt(THEME_TAG, ThemeMode.DEFAULT.ordinal)
+        } ?: ThemeMode.DEFAULT
+        set(value) {
+            editor.putInt(THEME_TAG, value.ordinal)
+            editor.apply()
+        }
 
     private fun generateDeviceId() {
         if (deviceId == null) {
@@ -65,11 +76,21 @@ class SharedPreferencesDataSourceImpl @Inject constructor(context: Context) :
         return deviceId!!
     }
 
+    override var notificationIds: Set<String>
+        get() = preferences.getStringSet(NOTIFICATION_IDS_TAG, mutableSetOf())
+            ?: mutableSetOf()
+        set(value) {
+            editor.putStringSet(NOTIFICATION_IDS_TAG, value)
+            editor.apply()
+        }
+
 
     companion object {
         private const val REVISION_TAG = "currentRevision"
         private const val DEVICE_TAG = "currentDevice"
         private const val SYNC_FLAG_TAG = "syncFlag"
         private const val SHOW_COMPLETED_TAG = "showCompleted"
+        private const val THEME_TAG = "theme"
+        private const val NOTIFICATION_IDS_TAG = "notificationIds"
     }
 }
